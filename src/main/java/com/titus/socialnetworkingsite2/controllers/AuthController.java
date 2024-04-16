@@ -9,7 +9,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,8 +38,24 @@ public class AuthController {
 
     @GetMapping("/activate-account{token}")
     public ResponseEntity<String> confirm( @PathVariable(name = "token")   @RequestParam String token) throws MessagingException {
-
      String confirmationResponse = authenticationService.activateAccount(token);
     return new ResponseEntity<>(confirmationResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/welcome")
+    public String welcome(Authentication authentication){
+        //String auth =  authentication.getPrincipal();
+        return (String) authentication.getPrincipal();
+    }
+
+
+
+
+    @GetMapping("/user")
+    public Principal showUser(Principal p) {
+        System.out.println(p.getClass().getName());
+        return p;
+    }
+
+
 }

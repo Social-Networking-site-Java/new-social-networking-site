@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableJpaAuditing
 @EnableAsync
 @SpringBootApplication
+//@EnableOAuth2Sso
 public class SocialNetworkingSite2Application {
 
 	public static void main(String[] args) {
