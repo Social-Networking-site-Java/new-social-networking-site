@@ -2,6 +2,7 @@ package com.titus.socialnetworkingsite2.services.ServiceImpl;
 
 
 import com.titus.socialnetworkingsite2.Dto.AuthenticationDTO;
+import com.titus.socialnetworkingsite2.Dto.ChangePasswordDTO;
 import com.titus.socialnetworkingsite2.Dto.RegistrationDTO;
 import com.titus.socialnetworkingsite2.Dto.Token;
 import com.titus.socialnetworkingsite2.Email.EmailService;
@@ -16,11 +17,13 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -43,6 +46,8 @@ public class AuthenticationServiceImpl {
     @Value("${application.mailing.frontend.activation-url}")
     String activationUrl;
 
+
+    // Registering the user
     public String register(RegistrationDTO request) throws MessagingException {
 
         var existingUser= userRepository.findByEmail(request.getEmail());
@@ -68,7 +73,7 @@ public class AuthenticationServiceImpl {
 
         // validation email
         sendValidationEmail(user);
-return "User " + request.getFirstName() + " Created Successfully check your email " + request.getEmail()+ " and verify your email address";
+        return "User " + request.getFirstName() + " Created Successfully check your email " + request.getEmail()+ " and verify your email address";
     }
 
     private void sendValidationEmail(User user) throws MessagingException {
@@ -101,17 +106,19 @@ return "User " + request.getFirstName() + " Created Successfully check your emai
     }
 
     private String generateActivationCode() {
-        String charractors = "0123456789";
+        String verification_code = "0123456789";
         StringBuilder codeBuilder = new StringBuilder();
         SecureRandom secureRandom = new SecureRandom();
         for (int i = 0; i< 6; i++){
-            int randomIndex = secureRandom.nextInt(charractors.length()); // 0..9
-            codeBuilder.append(charractors.charAt(randomIndex));
+            int randomIndex = secureRandom.nextInt(verification_code.length()); // 0..9
+            codeBuilder.append(verification_code.charAt(randomIndex));
         }
         return codeBuilder.toString();
 
     }
 
+
+    // authenticating the user
     public AuthTokenResponse authenticate(AuthenticationDTO request) {
 
         var auth = authenticationManager.authenticate(
@@ -133,7 +140,8 @@ return "User " + request.getFirstName() + " Created Successfully check your emai
         return  AuthTokenResponse.builder().token(jetToken).message(successMessage).build();
     }
 
-    // @Transactional
+
+    // activating the user account
     public String activateAccount(String token) throws MessagingException {
 
         Token savedToken = tokenRepository.findByToken(token)
@@ -152,6 +160,36 @@ return "User " + request.getFirstName() + " Created Successfully check your emai
         tokenRepository.save(savedToken);
 
         return "Account Activated Successfully! \n Hmmm!!! The way i have suffered &#x1F491";
+    }
+
+
+
+    // change users password
+    public void changePassword(ChangePasswordDTO request, Principal connectedUser) {
+
+        if (connectedUser == null) {
+            throw new BadCredentialsException("User not authenticated");
+        }
+
+        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        System.out.println("Authenticated user: " + user.getUsername());
+
+        // check if the current password is correct
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Wrong password");
+        }
+
+        // check if the two new passwords are the same
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new BadCredentialsException("Passwords do not match");
+        }
+
+        // update the password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        // save the user object to the database
+        userRepository.save(user);
 
 
     }
