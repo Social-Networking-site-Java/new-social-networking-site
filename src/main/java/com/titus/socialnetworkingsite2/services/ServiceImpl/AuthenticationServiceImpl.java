@@ -28,7 +28,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImpl {
 
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -118,6 +118,7 @@ return "User " + request.getFirstName() + " Created Successfully check your emai
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
+
                 )
         );
         var claims = new HashMap<String, Object>();

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Configuration
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
