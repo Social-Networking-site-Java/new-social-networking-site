@@ -29,7 +29,7 @@ public class JwtService {
 
 
     @Value("${application.security.jwt.expiration}")
-    private long jwtExpiration;
+    private long JWT_EXPIRATION;
 
     @Value("${application.security.jwt.secret-key}")
     private String SECRETE_KRY;
@@ -59,7 +59,7 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> claims, UserDetails userDetails){
-        return buildToken(claims, userDetails, jwtExpiration);
+        return buildToken(claims, userDetails, JWT_EXPIRATION);
     }
 
     private String buildToken(

@@ -17,7 +17,7 @@ public class profileServices {
 
     public String resetProfile(MultipartFile file) throws IOException {
 
-        String folder_path = "C:\\MyspringProjectProfileResetImages";
+        String folder_path = "D:\\profile-reset-folder\\";
         String filePath = folder_path + file.getOriginalFilename();
 
         User setProfilePicture = userRepository.save(User.builder()
@@ -25,11 +25,8 @@ public class profileServices {
                 .profilePictureUrl(filePath).build());
         file.transferTo(new File(filePath));
 
-        if (setProfilePicture != null){
-            return "file uploaded successfully" + filePath;
-        }
- return null;
-       // return "Successfully Reset Profile Picture" + setProfilePicture.getProfilePictureUrl();
+        return "file uploaded successfully " + filePath;
+        // return "Successfully Reset Profile Picture" + setProfilePicture.getProfilePictureUrl();
     }
 
 }
