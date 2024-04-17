@@ -21,10 +21,15 @@ public class profileServices {
         String filePath = folder_path + file.getOriginalFilename();
 
         User setProfilePicture = userRepository.save(User.builder()
-                                .profilePictureUrl(file.getOriginalFilename())
-                                .profilePictureUrl(filePath).build());
+                .profilePictureName(file.getOriginalFilename())
+                .profilePictureUrl(filePath).build());
         file.transferTo(new File(filePath));
-        return "Successfully Reset Profile Picture" + setProfilePicture.getProfilePictureUrl();
+
+        if (setProfilePicture != null){
+            return "file uploaded successfully" + filePath;
+        }
+ return null;
+       // return "Successfully Reset Profile Picture" + setProfilePicture.getProfilePictureUrl();
     }
 
 }

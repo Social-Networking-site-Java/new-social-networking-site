@@ -33,7 +33,6 @@ public class Role {
     @JsonIgnore
     private List<User> users;
 
-
     @CreatedDate // to automatically truck
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
