@@ -2,6 +2,7 @@ package com.titus.socialnetworkingsite2;
 
 import com.titus.socialnetworkingsite2.Dto.Role;
 import com.titus.socialnetworkingsite2.repositories.RoleRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,6 +30,11 @@ public class SocialNetworkingSite2Application {
 				);
 			}
 		};
+	}
+
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
 	}
 
 }

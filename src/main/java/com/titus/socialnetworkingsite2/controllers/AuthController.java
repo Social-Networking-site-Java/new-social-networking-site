@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +32,6 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody @Valid RegistrationDTO registerDto) throws MessagingException {
       String registrationResponse =   authenticationService.register(registerDto);
         return new ResponseEntity<>(registrationResponse, HttpStatus.CREATED);
-
     }
 
     // authenticate
@@ -64,9 +62,6 @@ public class AuthController {
 
 
 
-
-
-
     @PostMapping("/reset-profile")
     public ResponseEntity<?> profileSettings(@RequestParam("image") MultipartFile image) throws IOException {
      String setProfile =    profileServices.resetProfile(image);
@@ -78,9 +73,8 @@ public class AuthController {
 
 
     @GetMapping("/welcome")
-    public String welcome(Authentication authentication){
-        //String auth =  authentication.getPrincipal();
-        return (String) authentication.getPrincipal();
+    public String welcome(){
+        return "welcome";
     }
 
 

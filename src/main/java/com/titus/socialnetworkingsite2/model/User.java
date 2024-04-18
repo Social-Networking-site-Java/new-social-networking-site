@@ -1,5 +1,6 @@
 package com.titus.socialnetworkingsite2.model;
 
+import com.titus.socialnetworkingsite2.Dto.BlackListUsers;
 import com.titus.socialnetworkingsite2.Dto.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 public class User implements UserDetails, Principal {
 
     @Id
-    @GeneratedValue // habanate will take care of this
+    @GeneratedValue
     private Integer id;
     private String firstname;
     private String lastname;
@@ -37,16 +38,21 @@ public class User implements UserDetails, Principal {
     private LocalDate dateOfBirth;
     private String profilePictureName;
     private String profilePictureUrl;
+
     @Column(unique = true)
     private String email;
     private boolean accountLocked;
     private boolean enabled;
 
+//    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    private List<BlackListUsers> blacklistEntries;
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
 
-    @CreatedDate // to automatically truck
+    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
@@ -101,6 +107,6 @@ public class User implements UserDetails, Principal {
 
 
     public String fullName(){
-        return  firstname + " " + lastname;
+        return  firstname.toUpperCase() + " " + lastname;
     }
 }

@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl {
 
         var existingUser= userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
-            return "User  " + request.getFirstName() + " Already Exist";
+            return request.getFirstName() + " Already Exist";
         }
 
 
