@@ -1,6 +1,5 @@
 package com.titus.socialnetworkingsite2.model;
 
-import com.titus.socialnetworkingsite2.Dto.BlackListUsers;
 import com.titus.socialnetworkingsite2.Dto.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "\"User\"")
 @EntityListeners(AuditingEntityListener.class) // this will keep truck of when the user is created and the last time it was modified
 // implement getName from principal
 public class User implements UserDetails, Principal {
@@ -44,8 +43,12 @@ public class User implements UserDetails, Principal {
     private boolean accountLocked;
     private boolean enabled;
 
-//    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private List<BlackListUsers> blacklistEntries;
+
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    private List<BlackListUser> blackListUsers;
+
+   // private List<BlackListUser> blackListUsers;
 
 
     @ManyToMany(fetch = FetchType.EAGER)

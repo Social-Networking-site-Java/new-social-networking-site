@@ -95,4 +95,11 @@ return ResponseEntity.status(UNAUTHORIZED)
                         .build());
 
     }
+
+    public static class UserAlreadyBlacklistedException extends RuntimeException {
+        public UserAlreadyBlacklistedException(String message) {
+            super(message);
+        }
+    }
+
 }

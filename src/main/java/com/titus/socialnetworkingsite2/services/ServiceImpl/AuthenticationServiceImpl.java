@@ -125,7 +125,6 @@ public class AuthenticationServiceImpl {
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
-
                 )
         );
         var claims = new HashMap<String, Object>();
@@ -159,7 +158,7 @@ public class AuthenticationServiceImpl {
         savedToken.setValidateAt(LocalDateTime.now());
         tokenRepository.save(savedToken);
 
-        return "Account Activated Successfully! \n Hmmm!!! The way i have suffered &#x1F491";
+        return "Account Activated Successfully!";
     }
 
 

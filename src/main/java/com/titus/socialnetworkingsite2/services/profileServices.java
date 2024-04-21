@@ -26,7 +26,6 @@ public class profileServices {
         file.transferTo(new File(filePath));
 
         return "file uploaded successfully " + filePath;
-        // return "Successfully Reset Profile Picture" + setProfilePicture.getProfilePictureUrl();
     }
 
 }
