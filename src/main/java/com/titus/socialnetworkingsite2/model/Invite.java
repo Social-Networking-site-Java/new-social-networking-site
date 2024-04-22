@@ -17,7 +17,7 @@ public class Invite {
 
     @Id
     @GeneratedValue
-    private int id;
+    private Integer id;
     private String recipientEmail;
     private String inviteCode;
     @ManyToOne

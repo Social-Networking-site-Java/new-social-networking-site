@@ -44,7 +44,8 @@ public class AuthenticationServiceImpl {
 
 
     @Value("${application.mailing.frontend.activation-url}")
-    String activationUrl;
+   // String activationUrl;
+    String ACTIVATION_URL;
 
 
     // Registering the user
@@ -84,7 +85,7 @@ public class AuthenticationServiceImpl {
                 user.getEmail(),
                 user.fullName(),
                 EmailTemplateName.ACTIVATE_ACCOUNT,
-                activationUrl,
+                ACTIVATION_URL,
                 newToken,
                 "Account Activation"
         );

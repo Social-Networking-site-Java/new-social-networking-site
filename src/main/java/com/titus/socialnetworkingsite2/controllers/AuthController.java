@@ -44,7 +44,7 @@ public class AuthController {
 
     // activate token
     @GetMapping("/activate-account{token}")
-    public ResponseEntity<String> confirm( @PathVariable(name = "token")   @RequestParam String token) throws MessagingException {
+    public ResponseEntity<String> confirm( @PathVariable(name = "token") @RequestParam String token) throws MessagingException {
      String confirmationResponse = authenticationService.activateAccount(token);
     return new ResponseEntity<>(confirmationResponse, HttpStatus.OK);
     }
