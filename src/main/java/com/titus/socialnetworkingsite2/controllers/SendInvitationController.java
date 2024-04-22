@@ -17,7 +17,7 @@ import java.security.Principal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("auth")
-public class SendInvitation {
+public class SendInvitationController {
 
     private final UserInvitationService userInvitationService;
 
@@ -30,13 +30,14 @@ public class SendInvitation {
 
         userInvitationService.createInvite(user,inviteDTO);
        // String inviteLink = "http://localhost:5000/invite/" + InviteDTO.getToken();
-        String inviteLink = "http://localhost:5000/api/v1/auth/invite?inviteCode=" + InviteDTO.getToken();
+      //  String inviteLink = "http://localhost:5000/api/v1/auth/invite?inviteCode=" + InviteDTO.getToken();
+        // String inviteLink = generateInviteLink();
         System.out.println("==========================================");
-        System.out.println("invitation link: "+inviteLink);
+       // System.out.println("invitation link: "+generateInviteLink());
         System.out.println("receiver email: "+inviteDTO.getReceiver());
         System.out.println("Sender email: "+user.getEmail());
         System.out.println("===========================================");
-        String inviteResponse = userInvitationService.sendInviteEmail(inviteDTO, inviteLink, connectedUser);
+        String inviteResponse = userInvitationService.sendInviteEmail(inviteDTO, connectedUser);
         System.out.println(inviteResponse);
 
         return new ResponseEntity<>(inviteResponse, HttpStatus.ACCEPTED);
