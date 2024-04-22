@@ -13,7 +13,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class    BlackListDTO {
+public class BlackListDTO {
 
     @ManyToOne
     private User user;

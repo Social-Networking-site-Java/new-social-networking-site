@@ -12,7 +12,7 @@ import com.titus.socialnetworkingsite2.model.User;
 import com.titus.socialnetworkingsite2.repositories.RoleRepository;
 import com.titus.socialnetworkingsite2.repositories.TokenRepository;
 import com.titus.socialnetworkingsite2.repositories.UserRepository;
-import com.titus.socialnetworkingsite2.services.AuthTokenResponse;
+import com.titus.socialnetworkingsite2.model.AuthTokenResponse;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

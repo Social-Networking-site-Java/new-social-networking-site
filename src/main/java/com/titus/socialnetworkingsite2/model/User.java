@@ -44,6 +44,10 @@ public class User implements UserDetails, Principal {
     private boolean enabled;
 
 
+    @OneToMany(mappedBy = "user")
+    private List<Contacts> contacts;
+
+
 //    @JsonIgnore
 //    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    private List<BlackListUser> blackListUsers;
@@ -107,6 +111,10 @@ public class User implements UserDetails, Principal {
     public boolean isEnabled() {
         return enabled;
     }
+
+//    public void addContact(String firstname) {
+//        contacts.add(firstname);
+//    }
 
 
     public String fullName(){

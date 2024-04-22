@@ -3,14 +3,15 @@ package com.titus.socialnetworkingsite2.controllers;
 import com.titus.socialnetworkingsite2.Dto.AuthenticationDTO;
 import com.titus.socialnetworkingsite2.Dto.ChangePasswordDTO;
 import com.titus.socialnetworkingsite2.Dto.RegistrationDTO;
-import com.titus.socialnetworkingsite2.services.AuthTokenResponse;
+import com.titus.socialnetworkingsite2.model.AuthTokenResponse;
 import com.titus.socialnetworkingsite2.services.ServiceImpl.AuthenticationServiceImpl;
-import com.titus.socialnetworkingsite2.services.profileServices;
+import com.titus.socialnetworkingsite2.services.ServiceImpl.profileServices;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +52,7 @@ public class AuthController {
 
     // password reset
     @PatchMapping("/reset-password")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> resetPassword(@RequestBody ChangePasswordDTO changePasswordDTO, Principal principal) {
         try {
             authenticationService.changePassword(changePasswordDTO, principal);
@@ -63,6 +65,7 @@ public class AuthController {
 
 
     @PostMapping("/reset-profile")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> profileSettings(@RequestParam("image") MultipartFile image) throws IOException {
      String setProfile =    profileServices.resetProfile(image);
         return ResponseEntity.status(HttpStatus.OK).body(setProfile);
@@ -73,6 +76,7 @@ public class AuthController {
 
 
     @GetMapping("/welcome")
+    @PreAuthorize("isAuthenticated()")
     public String welcome(){
         return "welcome";
     }

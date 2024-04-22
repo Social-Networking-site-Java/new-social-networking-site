@@ -8,6 +8,7 @@ import com.titus.socialnetworkingsite2.services.BlackListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class BlacklistController {
     }
 
     @PostMapping("/removeFromBlacklist")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> removeFromBlacklist(@RequestBody BlackListDTO blackListDTO) {
      String removeFromBlackListResponse =  blackListService.removeFromBlacklist(blackListDTO.getBlacklistedUser(),blackListDTO.getUser());
        // return ResponseEntity.ok().build();
@@ -50,20 +52,13 @@ public class BlacklistController {
     }
 
     @GetMapping("/getAllBlackList")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BlackList>> getBlacklists() {
        List<BlackList> blackLists = blackListService.getBlacklists();
        return new ResponseEntity<>(blackLists, HttpStatus.OK);
 
     }
 
-
-
-
-   // Endpoint for removing a user from the blacklist
-    //....
-
-    // Endpoint for checking if a user is blacklisted
-    //....
 
 
 

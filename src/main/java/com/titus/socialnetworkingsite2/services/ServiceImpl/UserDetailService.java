@@ -1,4 +1,4 @@
-package com.titus.socialnetworkingsite2.services;
+package com.titus.socialnetworkingsite2.services.ServiceImpl;
 
 
 import com.titus.socialnetworkingsite2.repositories.UserRepository;

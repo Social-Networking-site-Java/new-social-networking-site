@@ -11,8 +11,5 @@ public interface BlackBlackListRepository extends JpaRepository<BlackList, Integ
 
     boolean existsByUserAndBlacklistedUser(User user, User blackListUser);
 
-    //Object existsByUserAndBlacklistedUser(User user, User blacklistedUser);
-    // Boolean existsByUsername(String username);
-
 
 }

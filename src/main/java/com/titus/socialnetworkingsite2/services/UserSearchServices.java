@@ -5,5 +5,5 @@ import com.titus.socialnetworkingsite2.model.User;
 import java.util.List;
 
 public interface UserSearchServices {
-    List<User> searchUsers(String searchTerm);
+    List<User> searchUser(String searchTerm);
 }
