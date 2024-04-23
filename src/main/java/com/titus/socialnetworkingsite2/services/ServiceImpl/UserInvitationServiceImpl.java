@@ -1,8 +1,10 @@
 package com.titus.socialnetworkingsite2.services.ServiceImpl;
 
 import com.titus.socialnetworkingsite2.Dto.InviteDTO;
+import com.titus.socialnetworkingsite2.model.Contacts;
 import com.titus.socialnetworkingsite2.model.Invite;
 import com.titus.socialnetworkingsite2.model.User;
+import com.titus.socialnetworkingsite2.repositories.ContactRepository;
 import com.titus.socialnetworkingsite2.repositories.InviteRepository;
 import com.titus.socialnetworkingsite2.repositories.UserRepository;
 import com.titus.socialnetworkingsite2.services.UserInvitationService;
@@ -10,14 +12,17 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.metadata.CollectionMetadata;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import java.math.BigInteger;
 import java.security.Principal;
+import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -26,43 +31,50 @@ public class UserInvitationServiceImpl implements UserInvitationService {
     private final JavaMailSender mailSender;
     private final UserRepository userRepository;
     private final InviteRepository inviteRepository;
+    private final ContactRepository contactRepository;
 
 
+    // Generate a stable token at the class level
+    private static final String INVITATION_TOKEN = generateToken();
 
     @Override
-    public void createInvite(User user, InviteDTO receiver) {
+    public void createInvite(User user, InviteDTO receiver, String inviteToken) {
 
-        var res = userRepository.findByEmail(receiver.getReceiver());
-        if (res.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        }
+//        var res = userRepository.findByEmail(receiver.getReceiver());
+//        if (res) {
+//            throw new UsernameNotFoundException("User not found");
+//        }
 
 
 
-        Optional<Invite> existingInvite = inviteRepository.findByRecipientEmail(String.valueOf(receiver));
-        if (existingInvite.isPresent()) {
-            throw new RuntimeException("Invite already sent to this email");
-        }
+//        var  existingInvite = userRepository.findByEmail(receiver.getReceiver());
+//        if (existingInvite.isPresent()) {
+//            throw new RuntimeException("Invite already sent to this email");
+//        }
 
-//        InviteDTO inviteDTO = new InviteDTO();
-//        inviteDTO.setSender(user);
-//        inviteDTO.setReceiver(String.valueOf(res));
-//        inviteDTO.setToken(InviteDTO.getToken());
+        Optional<Invite> inviteOptional = inviteRepository.findByInviteCode(inviteToken);
+
+if (inviteOptional.isPresent()) {
+    Invite invite = inviteOptional.get();
+    invite.setAccepted(true);
+    inviteRepository.save(invite);
+}
+
+
 
         Invite invite = new Invite();
         invite.setSender(user);
         invite.setRecipientEmail(receiver.getReceiver());
-        invite.setInviteCode(InviteDTO.getToken());
+        invite.setInviteCode(INVITATION_TOKEN);
 
         inviteRepository.save(invite);
-
-
-
-
     }
 
+
+
+
     @Override
-    public String sendInviteEmail(InviteDTO receiver, String inviteLink, Principal connectedUser) {
+    public String sendInviteEmail(InviteDTO receiver,  Principal connectedUser) {
         MimeMessage message = mailSender.createMimeMessage();
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
@@ -76,7 +88,7 @@ public class UserInvitationServiceImpl implements UserInvitationService {
             String content = "Hi there,\n\n" +
                     "I invite you to connect with me\n" +
                     "Please Click the link below to accept my invitation\n\n" +
-                    inviteLink + "\n\n" +
+                    generateInviteLink() + "\n\n" +
                     "Thanks,\n" +
                     user.getFirstname();
             message.setContent(content, "text/plain");
@@ -87,8 +99,84 @@ public class UserInvitationServiceImpl implements UserInvitationService {
             System.err.println("Error sending invite email: " + e.getMessage());
         }
 
-        return "love";
+        return "Invitation sent successfully";
     }
+
+
+    // Method to generate a stable token
+    private static String generateToken() {
+        byte[] bytes = new byte[5];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(bytes);
+
+        return new BigInteger(1, bytes).toString(16); // Hexadecimal encoding
+    }
+
+    public String generateInviteLink() {
+        // Use the same stable token for generating the invitation link
+        return "http://localhost:5000/api/v1/auth/invite?inviteCode=" + INVITATION_TOKEN;
+    }
+
+
+    public List<Invite> getInvitationsForUser() {
+        return inviteRepository.findAll();
+    }
+
+
+    public void acceptInvite(String inviteCode) {
+        Optional<Invite> inviteOptional = inviteRepository.findByInviteCode(inviteCode);
+        if (inviteOptional.isPresent()) {
+            Invite invite = inviteOptional.get();
+
+            // Update the 'accepted' field to true
+            invite.setAccepted(true);
+
+            User sender = invite.getSender();
+            User recipiant = userRepository.findByEmail(invite.getRecipientEmail())
+                    .orElseThrow(() -> new RuntimeException("Recipient not found"));
+            System.out.println("====================================================");
+
+            System.out.println(sender);
+            System.out.println("Sender: >>>" + sender.getFirstname());
+            System.out.println("reciver: >>>" + recipiant.getFirstname());
+
+            System.out.println("---------------------------------------------");
+            System.out.println(recipiant.getFirstname());
+
+            System.out.println("======================================================");
+
+            Contacts contacts = new Contacts();
+            contacts.setFirstName(recipiant.getFirstname());
+            contacts.setUser(sender);
+
+           sender.addContact(recipiant);
+          recipiant.addContact(sender);
+
+
+
+            // Save the updated invite
+            contactRepository.save(contacts);
+            inviteRepository.save(invite);
+            userRepository.save(sender);
+            userRepository.save(recipiant);
+
+        }else {
+            throw new RuntimeException("Invite not found");
+        }
+    }
+
+    public void declineInvite(String inviteCode) {
+        Optional<Invite> inviteOptional = inviteRepository.findByInviteCode(inviteCode);
+        if (inviteOptional.isPresent()) {
+            Invite invite = inviteOptional.get();
+            invite.setAccepted(false);
+            inviteRepository.save(invite);
+        }
+    }
+
+
+
+
 
 
 }

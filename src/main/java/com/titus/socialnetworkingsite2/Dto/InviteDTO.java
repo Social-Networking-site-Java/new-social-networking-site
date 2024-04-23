@@ -16,16 +16,17 @@ public class InviteDTO {
     private String sender;
     private String receiver;
     private String token;
-    private InvitationStatus status;
+    private String inviteCode;
+  //  private InvitationStatus status;
 
-    public static String getToken() {
-        byte[] bytes = new byte[5];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(bytes);
-
-        return new BigInteger(1, bytes).toString(16); // Hexadecimal encoding
-
-    }
+//    public static String getToken() {
+//        byte[] bytes = new byte[5];
+//        SecureRandom secureRandom = new SecureRandom();
+//        secureRandom.nextBytes(bytes);
+//
+//        return new BigInteger(1, bytes).toString(16); // Hexadecimal encoding
+//
+//    }
 
 
 }

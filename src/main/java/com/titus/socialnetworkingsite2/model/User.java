@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +47,21 @@ public class User implements UserDetails, Principal {
 
     @OneToMany(mappedBy = "user")
     private List<Contacts> contacts;
+
+    // Method to add a contact to the user's contacts list
+    public void addContact(User contactUser) {
+        if (contacts == null) {
+            contacts = new ArrayList<>();
+        }
+
+        Contacts contact = new Contacts();
+        contact.setFirstName(contactUser.getFirstname());
+        contact.setUser(this); // Set the user associated with this contact
+
+        contacts.add(contact);
+    }
+
+
 
 
 //    @JsonIgnore

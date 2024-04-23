@@ -9,7 +9,7 @@ import java.security.Principal;
 import java.util.List;
 
 public interface BlackListService {
-    String addTo(User user, User blackListUser);
+    String addToBlackList(User user, User blackListUser);
     String removeFromBlacklist(User user, User blackListUser);
     List<BlackList> getBlacklists();
 

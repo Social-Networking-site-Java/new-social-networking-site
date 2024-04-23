@@ -22,10 +22,9 @@ import java.util.List;
 public class BlackListServicesImpl implements BlackListService {
 
 
-    private final BlacklistRepository blacklistRepository;
+
     private final BlackBlackListRepository blacklistrepo;
-    //private final ModelMapper modelMapper;
-    private UserRepository userRepository;
+
 
 
 
@@ -52,7 +51,7 @@ public class BlackListServicesImpl implements BlackListService {
 //    }
 
     @Override
-    public String addTo(User user, User blackListUser) {
+    public String addToBlackList(User user, User blackListUser) {
         // Check if blackListUser is already in the blacklist
         if (blacklistrepo.existsByUserAndBlacklistedUser(user, blackListUser)) {
             throw new GlobalExceptionHandler.UserAlreadyBlacklistedException("User is already in the blacklist!");

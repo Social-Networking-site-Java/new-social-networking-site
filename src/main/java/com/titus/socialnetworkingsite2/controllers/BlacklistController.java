@@ -19,9 +19,6 @@ import java.util.List;
 public class BlacklistController {
 
     private final BlackListService blackListService;
-    private final UserRepository userRepository;
-    private final BlacklistRepository blacklistRepository;
-
 
 
 //    // Endpoint for adding a user to the blacklist
@@ -33,10 +30,11 @@ public class BlacklistController {
 //    }
 
 
-    @PostMapping("/add")
+    @PostMapping("/addToBlackList")
+    @PreAuthorize("isAuthenticated()")
         public ResponseEntity<String> addTo( @RequestBody BlackListDTO blackListDTO) {
 
-     String blackListResponse =  blackListService.addTo(blackListDTO.getBlacklistedUser(),blackListDTO.getUser());
+     String blackListResponse =  blackListService.addToBlackList(blackListDTO.getBlacklistedUser(),blackListDTO.getUser());
 
         return new ResponseEntity<>(blackListResponse, HttpStatus.CREATED);
 
@@ -51,7 +49,7 @@ public class BlacklistController {
 
     }
 
-    @GetMapping("/getAllBlackList")
+    @GetMapping("/getAllBlackListedUsers")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BlackList>> getBlacklists() {
        List<BlackList> blackLists = blackListService.getBlacklists();

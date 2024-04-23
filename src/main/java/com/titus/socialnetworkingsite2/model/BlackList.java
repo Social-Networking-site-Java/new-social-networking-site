@@ -20,8 +20,8 @@ public class BlackList {
     private Integer id;
 
     @ManyToOne
-    private User user;
+    private User user; // blacklist by
 
     @ManyToOne
-    private User blacklistedUser;
+    private User blacklistedUser; // victim
 }

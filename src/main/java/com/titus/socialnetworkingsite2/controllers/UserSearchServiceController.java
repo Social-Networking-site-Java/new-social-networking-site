@@ -20,7 +20,7 @@ public class UserSearchServiceController {
 
     private final UserSearchServices userSearchServices;
 
-    @PostMapping("/search")
+    @PostMapping("/searchForUsers")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<User>> searchUsers(@RequestParam String searchTeam) {
         List<User> users = userSearchServices.searchUser(searchTeam);
