@@ -12,11 +12,9 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.metadata.CollectionMetadata;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigInteger;
 import java.security.Principal;
@@ -47,20 +45,21 @@ public class UserInvitationServiceImpl implements UserInvitationService {
 
 
 
-//        var  existingInvite = userRepository.findByEmail(receiver.getReceiver());
-//        if (existingInvite.isPresent()) {
-//            throw new RuntimeException("Invite already sent to this email");
-//        }
+        // check if user exit in already
+        var  existingInvite = userRepository.findByEmail(receiver.getReceiver());
+        if (existingInvite.isPresent()) {
+            throw new RuntimeException("Invite already sent to this email");
+        }
 
+        // Get user from invite repository
         Optional<Invite> inviteOptional = inviteRepository.findByInviteCode(inviteToken);
 
-if (inviteOptional.isPresent()) {
-    Invite invite = inviteOptional.get();
-    invite.setAccepted(true);
-    inviteRepository.save(invite);
-}
-
-
+        // set user to true by setting isAccepted to true
+        if (inviteOptional.isPresent()) {
+            Invite invite = inviteOptional.get();
+            invite.setAccepted(true);
+            inviteRepository.save(invite);
+        }
 
         Invite invite = new Invite();
         invite.setSender(user);
@@ -76,9 +75,11 @@ if (inviteOptional.isPresent()) {
     @Override
     public String sendInviteEmail(InviteDTO receiver,  Principal connectedUser) {
         MimeMessage message = mailSender.createMimeMessage();
+
+        // getting the current logged user
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
-
+        //user invitation email draft
         try {
             message.setSubject("Invitation from " + user.fullName());
             message.setFrom("iakwasititus@gmail.com");
@@ -112,19 +113,25 @@ if (inviteOptional.isPresent()) {
         return new BigInteger(1, bytes).toString(16); // Hexadecimal encoding
     }
 
+   // user invitation link
     public String generateInviteLink() {
         // Use the same stable token for generating the invitation link
         return "http://localhost:5000/api/v1/auth/invite?inviteCode=" + INVITATION_TOKEN;
     }
 
 
-    public List<Invite> getInvitationsForUser() {
+    @Override
+    public List<Invite> getAllInvitations() {
         return inviteRepository.findAll();
     }
 
 
+    @Override
     public void acceptInvite(String inviteCode) {
+
+        // getting the user by the invitation code
         Optional<Invite> inviteOptional = inviteRepository.findByInviteCode(inviteCode);
+
         if (inviteOptional.isPresent()) {
             Invite invite = inviteOptional.get();
 
@@ -134,16 +141,6 @@ if (inviteOptional.isPresent()) {
             User sender = invite.getSender();
             User recipiant = userRepository.findByEmail(invite.getRecipientEmail())
                     .orElseThrow(() -> new RuntimeException("Recipient not found"));
-            System.out.println("====================================================");
-
-            System.out.println(sender);
-            System.out.println("Sender: >>>" + sender.getFirstname());
-            System.out.println("reciver: >>>" + recipiant.getFirstname());
-
-            System.out.println("---------------------------------------------");
-            System.out.println(recipiant.getFirstname());
-
-            System.out.println("======================================================");
 
             Contacts contacts = new Contacts();
             contacts.setFirstName(recipiant.getFirstname());

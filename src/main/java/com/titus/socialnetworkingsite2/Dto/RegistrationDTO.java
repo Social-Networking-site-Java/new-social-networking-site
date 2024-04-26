@@ -67,7 +67,6 @@ public class RegistrationDTO {
     @NotEmpty(message = "field required")
     @NotBlank(message = "field required")
     @Size(min = 8, message = "Password should be 8 characters long")
-
     private String password;
 
 }

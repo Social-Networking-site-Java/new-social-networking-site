@@ -48,7 +48,7 @@ public class SendInvitationController {
 //       User user = userRepository.findByEmail(userEmail.getEmail())
 //               .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         // Fetch invitations for the user
-        List<Invite> invitations = userInvitationService.getInvitationsForUser();
+        List<Invite> invitations = userInvitationService.getAllInvitations();
 
         return  ResponseEntity.ok(invitations);
 

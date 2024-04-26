@@ -20,6 +20,6 @@ public class AuthenticationDTO {
 
     @NotEmpty(message = "field required")
     @NotBlank(message = "field required")
-    @Size(min = 8, message = "Password should be 8 characters long")
+    @Size(min = 8, message = "Invalid Password")
     private String password;
 }

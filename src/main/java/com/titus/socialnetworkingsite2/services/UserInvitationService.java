@@ -6,7 +6,6 @@ import com.titus.socialnetworkingsite2.model.User;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 public interface UserInvitationService {
 
@@ -15,7 +14,7 @@ public interface UserInvitationService {
 
     void createInvite(User user, InviteDTO receiver, String inviteToken);
 
-    List<Invite> getInvitationsForUser();
+    List<Invite> getAllInvitations();
 
     void acceptInvite(String inviteCode);
     void declineInvite(String inviteCode);

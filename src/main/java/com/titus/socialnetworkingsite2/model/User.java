@@ -38,6 +38,7 @@ public class User implements UserDetails, Principal {
     private LocalDate dateOfBirth;
     private String profilePictureName;
     private String profilePictureUrl;
+    private Status status;
 
     @Column(unique = true)
     private String email;
@@ -47,6 +48,9 @@ public class User implements UserDetails, Principal {
 
     @OneToMany(mappedBy = "user")
     private List<Contacts> contacts;
+
+    @OneToMany
+    private List<BlackListList> blackListList;
 
     // Method to add a contact to the user's contacts list
     public void addContact(User contactUser) {
