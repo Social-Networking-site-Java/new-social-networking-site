@@ -1,10 +1,8 @@
 package com.titus.socialnetworkingsite2.services.ServiceImpl;
 
 
-import com.titus.socialnetworkingsite2.Dto.AuthenticationDTO;
-import com.titus.socialnetworkingsite2.Dto.ChangePasswordDTO;
-import com.titus.socialnetworkingsite2.Dto.RegistrationDTO;
-import com.titus.socialnetworkingsite2.Dto.Token;
+import com.titus.socialnetworkingsite2.Dto.*;
+import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.Email.EmailService;
 import com.titus.socialnetworkingsite2.Email.EmailTemplateName;
 import com.titus.socialnetworkingsite2.config.JwtService;
@@ -16,8 +14,8 @@ import com.titus.socialnetworkingsite2.model.AuthTokenResponse;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,14 +44,20 @@ public class AuthenticationServiceImpl {
     @Value("${application.mailing.frontend.activation-url}")
    // String activationUrl;
     String ACTIVATION_URL;
+    String REGISTRATION_SUCCESS = "User Created Successfully. Please check email to verify your account";
+    String USER_NOT_FOUND = "User already Exist";
+    String PASSWORD_RESET_SUCCESSFUL = "Password Reset Successful";
+    String AUTH_SUCCESS = "Authentication successful";
 
 
     // Registering the user
-    public String register(RegistrationDTO request) throws MessagingException {
+    public GenResponse register(RegistrationDTO request) throws MessagingException {
 
         var existingUser= userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
-            return request.getFirstName() + " Already Exist";
+            return GenResponse.builder()
+                    .status(HttpStatus.CREATED.value())
+                    .message(USER_NOT_FOUND).build();
         }
 
 
@@ -74,7 +78,10 @@ public class AuthenticationServiceImpl {
 
         // validation email
         sendValidationEmail(user);
-        return "User " + request.getFirstName() + " Created Successfully check your email " + request.getEmail()+ " and verify your email address";
+
+       return GenResponse.builder()
+               .status(HttpStatus.CREATED.value())
+               .message(REGISTRATION_SUCCESS).build();
     }
 
     private void sendValidationEmail(User user) throws MessagingException {
@@ -133,11 +140,7 @@ public class AuthenticationServiceImpl {
         claims.put("fullName", user.fullName());
         var jetToken = jwtService.generateToken(claims, user);
 
-
-        // Include the success message in the AuthTokenResponse
-        String successMessage = "Authentication successful";
-
-        return  AuthTokenResponse.builder().token(jetToken).message(successMessage).build();
+        return  AuthTokenResponse.builder().token(jetToken).message(AUTH_SUCCESS).build();
     }
 
 
@@ -165,24 +168,31 @@ public class AuthenticationServiceImpl {
 
 
     // change users password
-    public void changePassword(ChangePasswordDTO request, Principal connectedUser) {
+    public GenResponse changePassword(ChangePasswordDTO request, Principal connectedUser) {
 
         if (connectedUser == null) {
-            throw new BadCredentialsException("User not authenticated");
+
+//            throw new BadCredentialsException("User not authenticated");
+            return GenResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .message(USER_NOT_FOUND).build();
         }
 
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
-        System.out.println("Authenticated user: " + user.getUsername());
-
         // check if the current password is correct
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new BadCredentialsException("Wrong password");
+//            throw new BadCredentialsException("Wrong password");
+            return GenResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .message("wrong password").build();
         }
 
         // check if the two new passwords are the same
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            throw new BadCredentialsException("Passwords do not match");
+            return GenResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .message("passwords do not match").build();
         }
 
         // update the password
@@ -190,6 +200,10 @@ public class AuthenticationServiceImpl {
 
         // save the user object to the database
         userRepository.save(user);
+
+        return GenResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message(PASSWORD_RESET_SUCCESSFUL).build();
 
 
     }

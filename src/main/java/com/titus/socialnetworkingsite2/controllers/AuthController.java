@@ -2,6 +2,7 @@ package com.titus.socialnetworkingsite2.controllers;
 
 import com.titus.socialnetworkingsite2.Dto.AuthenticationDTO;
 import com.titus.socialnetworkingsite2.Dto.ChangePasswordDTO;
+import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.Dto.RegistrationDTO;
 import com.titus.socialnetworkingsite2.model.AuthTokenResponse;
 import com.titus.socialnetworkingsite2.services.ServiceImpl.AuthenticationServiceImpl;
@@ -21,7 +22,7 @@ import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthenticationServiceImpl authenticationService;
@@ -30,16 +31,16 @@ public class AuthController {
     // registering user
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> register(@RequestBody @Valid RegistrationDTO registerDto) throws MessagingException {
-      String registrationResponse =   authenticationService.register(registerDto);
-        return new ResponseEntity<>(registrationResponse, HttpStatus.CREATED);
+    public ResponseEntity<GenResponse> register(@RequestBody @Valid RegistrationDTO registerDto) throws MessagingException {
+        return new ResponseEntity<>(authenticationService.register(registerDto), HttpStatus.CREATED);
     }
+
+
 
     // authenticate
     @PostMapping("/authentication")
-    public ResponseEntity<AuthTokenResponse> authenticationResponseEntity(
-            @RequestBody @Valid AuthenticationDTO authenticationDto) {
-        return ResponseEntity.ok(authenticationService.authenticate(authenticationDto));
+    public ResponseEntity<AuthTokenResponse> authenticationResponseEntity(@RequestBody @Valid AuthenticationDTO authenticationDto) {
+        return new ResponseEntity<>(authenticationService.authenticate(authenticationDto), HttpStatus.OK);
     }
 
     // activate token
@@ -52,23 +53,20 @@ public class AuthController {
 
     // password reset
     @PatchMapping("/reset-password")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> resetPassword(@RequestBody ChangePasswordDTO changePasswordDTO, Principal principal) {
+    public ResponseEntity<GenResponse> resetPassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO, Principal principal) {
         try {
-            authenticationService.changePassword(changePasswordDTO, principal);
-            return ResponseEntity.ok("Password reset successful");
+
+           // return ResponseEntity.ok("Password reset successful");
+            return new ResponseEntity<>(authenticationService.changePassword(changePasswordDTO, principal),HttpStatus.OK);
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         }
     }
 
-
-
     @PostMapping("/reset-profile")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> profileSettings(@RequestParam("image") MultipartFile image) throws IOException {
-     String setProfile =    profileServices.resetProfile(image);
-        return ResponseEntity.status(HttpStatus.OK).body(setProfile);
+    public ResponseEntity<GenResponse> profileSettings(@RequestParam("image") MultipartFile image) throws IOException {
+        return new ResponseEntity<>(profileServices.resetProfile(image),HttpStatus.OK);
     }
 
 

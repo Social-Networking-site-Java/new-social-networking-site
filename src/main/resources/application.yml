@@ -61,8 +61,8 @@ application:
 server:
   port: 5000
 
-  servlet:
-    context-path: /api/v1
+#  servlet:
+#    context-path: /api/v1
 
 
 

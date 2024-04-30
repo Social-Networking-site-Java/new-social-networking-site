@@ -12,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+
 public class ExceptionResponse {
 
     private Integer businessErrorCode;

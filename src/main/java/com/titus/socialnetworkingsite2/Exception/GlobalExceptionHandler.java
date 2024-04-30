@@ -85,9 +85,6 @@ return ResponseEntity.status(UNAUTHORIZED)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handelException(Exception exception){
 
-        // log the exp
-        exception.printStackTrace();
-
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                 .body(ExceptionResponse.builder()
                         .businessErrorDescription("Internal error. please contact the admin")

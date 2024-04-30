@@ -17,6 +17,12 @@ public class UserSearchServicesImpl implements UserSearchServices {
 
     @Override
     public List<User> searchUser(String searchTerm) {
+
         return userSearchRepository.findByEmailContainingOrFirstnameContaining(searchTerm, searchTerm);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userSearchRepository.findAll();
     }
 }

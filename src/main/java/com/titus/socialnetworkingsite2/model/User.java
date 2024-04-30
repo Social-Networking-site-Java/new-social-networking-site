@@ -1,5 +1,8 @@
 package com.titus.socialnetworkingsite2.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.titus.socialnetworkingsite2.Dto.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Getter
 @Setter
 @Builder
@@ -35,7 +39,6 @@ public class User implements UserDetails, Principal {
     private String firstname;
     private String lastname;
     private String password;
-    private LocalDate dateOfBirth;
     private String profilePictureName;
     private String profilePictureUrl;
     private Status status;
@@ -47,12 +50,11 @@ public class User implements UserDetails, Principal {
 
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Contacts> contacts;
 
-    @OneToMany
-    private List<BlackListList> blackListList;
-
     // Method to add a contact to the user's contacts list
+    @JsonIgnore
     public void addContact(User contactUser) {
         if (contacts == null) {
             contacts = new ArrayList<>();
@@ -76,6 +78,7 @@ public class User implements UserDetails, Principal {
 
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Role> roles;
 
 

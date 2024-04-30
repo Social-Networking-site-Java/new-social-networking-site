@@ -20,7 +20,6 @@ public class Invite {
     private Integer id;
     private String recipientEmail;
     private String inviteCode;
-    @ManyToOne
-    private User sender;
+    private String sender;
     private boolean accepted;
 }
