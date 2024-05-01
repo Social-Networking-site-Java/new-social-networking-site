@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +44,8 @@ public class AuthenticationServiceImpl {
     private final JwtService jwtService;
 
 
-
     @Value("${application.mailing.frontend.activation-url}")
-   // String activationUrl;
+    // String activationUrl;
     String ACTIVATION_URL;
     String REGISTRATION_SUCCESS = "User Created Successfully. Please check email to verify your account";
     String USER_NOT_FOUND = "User already Exist";
@@ -53,7 +56,7 @@ public class AuthenticationServiceImpl {
     // Registering the user
     public GenResponse register(RegistrationDTO request) throws MessagingException {
 
-        var existingUser= userRepository.findByEmail(request.getEmail());
+        var existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
             return GenResponse.builder()
                     .status(HttpStatus.CREATED.value())
@@ -79,9 +82,9 @@ public class AuthenticationServiceImpl {
         // validation email
         sendValidationEmail(user);
 
-       return GenResponse.builder()
-               .status(HttpStatus.CREATED.value())
-               .message(REGISTRATION_SUCCESS).build();
+        return GenResponse.builder()
+                .status(HttpStatus.CREATED.value())
+                .message(REGISTRATION_SUCCESS).build();
     }
 
     private void sendValidationEmail(User user) throws MessagingException {
@@ -117,7 +120,7 @@ public class AuthenticationServiceImpl {
         String verification_code = "0123456789";
         StringBuilder codeBuilder = new StringBuilder();
         SecureRandom secureRandom = new SecureRandom();
-        for (int i = 0; i< 6; i++){
+        for (int i = 0; i < 6; i++) {
             int randomIndex = secureRandom.nextInt(verification_code.length()); // 0..9
             codeBuilder.append(verification_code.charAt(randomIndex));
         }
@@ -129,18 +132,21 @@ public class AuthenticationServiceImpl {
     // authenticating the user
     public AuthTokenResponse authenticate(AuthenticationDTO request) {
 
-        var auth = authenticationManager.authenticate(
+        Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        var claims = new HashMap<String, Object>();
-        var user = ((User)auth.getPrincipal());
-        claims.put("fullName", user.fullName());
-        var jetToken = jwtService.generateToken(claims, user);
 
-        return  AuthTokenResponse.builder().token(jetToken).message(AUTH_SUCCESS).build();
+        Optional<User> userExists = userRepository.findByEmail(request.getEmail());
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("fullName", userExists.get().fullName());
+
+        UserDetails user = (UserDetails) auth.getPrincipal();
+        String jetToken = jwtService.generateToken(claims, user);
+        return AuthTokenResponse.builder().token(jetToken).message(AUTH_SUCCESS).build();
     }
 
 
@@ -164,7 +170,6 @@ public class AuthenticationServiceImpl {
 
         return "Account Activated Successfully!";
     }
-
 
 
     // change users password

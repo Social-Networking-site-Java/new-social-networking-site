@@ -10,6 +10,6 @@ import lombok.Setter;
 @Builder
 public class Message {
     private String content;
-    private String sender;
-    private String receiver;
+    //private String sender;
+    //private String receiver;
 }

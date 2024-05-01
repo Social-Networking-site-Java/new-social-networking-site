@@ -11,4 +11,13 @@ public interface InviteRepository extends JpaRepository<Invite, Integer> {
 
 
     boolean existsByRecipientEmail (String recipientEmail);
+
+   // List<Invite> findByBlacklistedBy();
+    //List<Invite> findByBySender (String sender);
+    //List<InviteDTO> findBySenderAndRecipientEmail (String sender, String recipientEmail);
+    Invite findBySender(String sender);
+
+    boolean existsBySender(String sender);
+
+    boolean existsBySenderAndRecipientEmail(String sender, String recipientEmail);
 }

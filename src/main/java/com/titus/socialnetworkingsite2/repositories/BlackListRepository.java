@@ -18,7 +18,9 @@ public interface BlackListRepository extends JpaRepository<BlackList, Integer> {
 
     BlackList findByBlacklisted(String blacklisted);
 
-    boolean existsByBlacklisted(String blacklisted);
+    boolean existsByBlacklistedAndBlacklistedBy(String blacklisted, String blacklistedBy);
+
+    BlackList findByBlacklistedAndBlacklistedBy(String blacklisted, String blacklistedBy);
 
     //BlackListDTO findByIsBlacklist(Integer isBlacklist);
 

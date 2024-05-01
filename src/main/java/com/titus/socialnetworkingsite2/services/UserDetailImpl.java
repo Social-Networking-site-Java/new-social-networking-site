@@ -3,15 +3,14 @@ package com.titus.socialnetworkingsite2.services;
 import com.titus.socialnetworkingsite2.model.User;
 import com.titus.socialnetworkingsite2.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,9 +34,15 @@ public class UserDetailImpl implements UserDetailsService {
                 userDetails.getPassword(),
                grantedAuthorities(userDetails));
 
+//        return User.builder()
+//                .email(userDetails.getEmail())
+//                .password(userDetails.getPassword())
+//               // .roles(grantedAuthorities(user))
+//                .build();
+
     }
 
-    private Collection<GrantedAuthority> grantedAuthorities(User user) {
+    private List<SimpleGrantedAuthority> grantedAuthorities(User user) {
         return Collections.singletonList(new SimpleGrantedAuthority(user.getRoles().toString()));
     }
 }

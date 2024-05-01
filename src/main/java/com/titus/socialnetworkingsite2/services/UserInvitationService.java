@@ -1,9 +1,11 @@
 package com.titus.socialnetworkingsite2.services;
 
+import com.titus.socialnetworkingsite2.Dto.BlackListDTO;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.Dto.InviteDTO;
 import com.titus.socialnetworkingsite2.model.Invite;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface UserInvitationService {
@@ -12,7 +14,9 @@ public interface UserInvitationService {
    // String sendInviteEmail(InviteDTO receiver, Principal connectedUser, String email);
 
    // void createInvite(User user, InviteDTO receiver, String inviteToken, String email);
-    GenResponse createInvite(InviteDTO isUser);
+    GenResponse createInvite(InviteDTO isUser, BlackListDTO blackListDTO, Principal principal);
+
+   // String sendInviteEmail(InviteDTO receiver, Principal connectedUser, String email);
 
     List<Invite> getAllInvitations();
 

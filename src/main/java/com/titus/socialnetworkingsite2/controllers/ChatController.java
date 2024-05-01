@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.util.HtmlUtils;
 
 @Controller
 @RequiredArgsConstructor
@@ -17,18 +15,20 @@ public class ChatController {
 
     @MessageMapping("/sendMessage")
     @SendTo("/topic/messages")
-    public Message sendMessage(Message message) {
+    public String sendMessage(Message message) {
 
 
         // Get the authenticated user's information
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
 
-        messagingTemplate.convertAndSend("/topic/messages/" + message.getReceiver(), message);
+      //  messagingTemplate.convertAndSend("/topic/messages/" + message.getReceiver(), message);
 
         // Set the sender of the message as the authenticated user's username
-        message.setSender(username);
+      //  message.setSender(username);
 
-        return message;
+
+
+        return HtmlUtils.htmlEscape(message.getContent());
     }
 }

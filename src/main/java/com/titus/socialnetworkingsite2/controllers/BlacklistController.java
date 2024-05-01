@@ -13,23 +13,26 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("blacklist")
+@RequestMapping("api/v1/blacklist/")
 public class BlacklistController {
 
     private final BlackListService blackListService;
 
 
     @PostMapping("/addToBlackList")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<GenResponse> addToBlackList(@RequestBody BlackListDTO blackListDTO) {
         return new ResponseEntity<>(blackListService.addToBlackList(blackListDTO), HttpStatus.OK);
     }
 
     @PostMapping("/removeFromBlacklist")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<GenResponse> removeFromBlacklist(@RequestBody BlackListDTO blackList) {
         return new ResponseEntity<>(blackListService.removeFromBlacklist(blackList), HttpStatus.OK);
     }
 
     @GetMapping("/getAllBlackListedUsers")
+    @ResponseStatus(HttpStatus.OK)
     public List<BlackList> getBlacklists() {
         return blackListService.getBlacklists();
     }

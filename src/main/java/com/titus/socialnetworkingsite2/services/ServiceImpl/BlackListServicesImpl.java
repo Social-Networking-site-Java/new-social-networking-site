@@ -6,10 +6,13 @@ import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.model.BlackList;
 import com.titus.socialnetworkingsite2.model.User;
 import com.titus.socialnetworkingsite2.repositories.BlackListRepository;
+import com.titus.socialnetworkingsite2.repositories.UserRepository;
 import com.titus.socialnetworkingsite2.services.BlackListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +24,7 @@ public class BlackListServicesImpl implements BlackListService {
 
 
     private final BlackListRepository blackListRepository;
+    private final UserRepository userRepository;
 
     // add to blacklist
 //    @Override
@@ -44,25 +48,56 @@ public class BlackListServicesImpl implements BlackListService {
 //                .build();
 //    }
 
+//    @Override
+//    public GenResponse addToBlackList(BlackListDTO blackListDTO) {
+//        // Check if blackListUser is already in the blacklist
+//
+//
+//        if (blackListRepository.existsByBlacklisted(blackListDTO.getBlacklisted())){
+//            return GenResponse.builder()
+//                    .status(HttpStatus.OK.value())
+//                    .message( blackListDTO.getBlacklisted() + " already blacklisted!").build();
+//        }
+//
+//
+//       // User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//
+//        BlackList blackList = BlackList.builder()
+//                .blacklisted(blackListDTO.getBlacklisted())
+//                .isBlacklisted(true)
+//                 .blacklistedBy(blackListDTO.getBlacklistedBy())
+//                //.blacklistedBy(user.getId().toString())
+//                .build();
+//        blackListRepository.save(blackList);
+//        return GenResponse.builder()
+//                .status(HttpStatus.CREATED.value())
+//                .message("Successfully added to BlackList").build();
+//    }
+
+
+
+
+//...
+
     @Override
     public GenResponse addToBlackList(BlackListDTO blackListDTO) {
+
         // Check if blackListUser is already in the blacklist
-
-
-        if (blackListRepository.existsByBlacklisted(blackListDTO.getBlacklisted())){
+        if (blackListRepository.existsByBlacklistedAndBlacklistedBy(blackListDTO.getBlacklisted(), blackListDTO.getBlacklistedBy())){
             return GenResponse.builder()
                     .status(HttpStatus.OK.value())
                     .message( blackListDTO.getBlacklisted() + " already blacklisted!").build();
         }
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails user = (UserDetails) auth.getPrincipal();
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         BlackList blackList = BlackList.builder()
                 .blacklisted(blackListDTO.getBlacklisted())
                 .isBlacklisted(true)
-                // .blacklistedBy(blackListDTO.getBlacklistedBy())
-                .blacklistedBy(user.getId().toString())
+//                .blacklistedBy(blackListDTO.getBlacklistedBy())
+                .blacklistedBy(user.getUsername())
                 .build();
         blackListRepository.save(blackList);
         return GenResponse.builder()

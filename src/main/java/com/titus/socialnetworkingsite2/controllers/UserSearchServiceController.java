@@ -15,14 +15,14 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("search")
+@RequestMapping("api/v1/auth")
+//@RequestMapping("search")
 public class UserSearchServiceController {
 
     private final UserSearchServices userSearchServices;
 
 
     @GetMapping("/searchForUsers")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<User>> searchUsers(@RequestParam("searchTerm") String searchTeam) {
         List<User> users = userSearchServices.searchUser(searchTeam);
         if (users.isEmpty()) {
