@@ -32,6 +32,7 @@ public class UserSearchServiceController {
         return ResponseEntity.ok(users);
     }
 
+
     @GetMapping("/allUsers")
     public ResponseEntity<List<User>> allUser() {
         List<User> users = userSearchServices.getAllUsers();

@@ -98,19 +98,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .cors(withDefaults())
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth ->
+                .authorizeHttpRequests((auth) ->
                          auth
                         .requestMatchers(
-                        "api/v1/auth/**",
-                        "stomp-endpoint/**"
-                        //"api/v1/invitation/**",
-                      //  "api/v1/swagger-ui"
-                        )
-                        .permitAll()
-                        .anyRequest().authenticated())
-
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/swagger-config",
+                                "/swagger-ui/index.html",
+                                "gs-guide-websocket/**",
+                                "api/v1/auth/**")
+                                 .permitAll()
+                                 .anyRequest()
+                                 .authenticated()
+                )
 
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

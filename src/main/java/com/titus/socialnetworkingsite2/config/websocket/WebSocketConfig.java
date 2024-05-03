@@ -1,3 +1,4 @@
+package com.titus.socialnetworkingsite2.config.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

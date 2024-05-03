@@ -40,14 +40,14 @@ public class AuthController {
 
     // authenticate
     @PostMapping("/authentication")
-    @Operation(summary = "registering a user")
+    @Operation(summary = "Logging In the User")
     public ResponseEntity<AuthTokenResponse> authenticationResponseEntity(@RequestBody @Valid AuthenticationDTO authenticationDto) {
         return new ResponseEntity<>(authenticationService.authenticate(authenticationDto), HttpStatus.OK);
     }
 
     // activate token
     @GetMapping("/activate-account{token}")
-    @Operation(summary = "registering a user")
+    @Operation(summary = "Account Activation")
     public ResponseEntity<String> confirm( @PathVariable(name = "token") @RequestParam String token) throws MessagingException {
      String confirmationResponse = authenticationService.activateAccount(token);
     return new ResponseEntity<>(confirmationResponse, HttpStatus.OK);
@@ -56,7 +56,7 @@ public class AuthController {
 
     // password reset
     @PatchMapping("/reset-password")
-    @Operation(summary = "registering a user")
+    @Operation(summary = "Resetting User Password")
     public ResponseEntity<GenResponse> resetPassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO, Principal principal) {
         try {
            // return ResponseEntity.ok("Password reset successful");
@@ -68,19 +68,10 @@ public class AuthController {
     }
 
     @PostMapping("/reset-profile")
-    @Operation(summary = "registering a user")
+    @Operation(summary = "Resetting User Profile")
     public ResponseEntity<GenResponse> profileSettings(@RequestParam("image") MultipartFile image) throws IOException {
         return new ResponseEntity<>(profileServices.resetProfile(image),HttpStatus.OK);
     }
-
-
-//
-//
-//
-//    @GetMapping("/welcome")
-//    public String welcome(){
-//        return "welcome";
-//    }
 
 
 }

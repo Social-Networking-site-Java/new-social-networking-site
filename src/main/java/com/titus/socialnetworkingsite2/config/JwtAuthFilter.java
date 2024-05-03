@@ -44,7 +44,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = userDetail.loadUserByUsername(userEmail);
 
-            System.out.println("************" + userDetails.getUsername());
+            System.out.println("=========================================");
+            System.out.println("User: " + userDetails.getUsername());
             System.out.println(userDetails);
 
             if (jwtService.isTokenValid(jwt, userDetails)) {
