@@ -10,8 +10,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class BlackListResponseDto {
-    private int id;
-    private String blacklistedBy;
+//    private int id;
+//    private String blacklistedBy;
     private String blacklisted;
 
 }

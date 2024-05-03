@@ -1,5 +1,8 @@
 package com.titus.socialnetworkingsite2.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.titus.socialnetworkingsite2.Dto.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,9 +16,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Getter
 @Setter
@@ -34,14 +39,35 @@ public class User implements UserDetails, Principal {
     private String firstname;
     private String lastname;
     private String password;
-    private LocalDate dateOfBirth;
     private String profilePictureName;
     private String profilePictureUrl;
+    private Status status;
 
     @Column(unique = true)
     private String email;
     private boolean accountLocked;
     private boolean enabled;
+
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Contacts> contacts;
+
+    // Method to add a contact to the user's contacts list
+    @JsonIgnore
+    public void addContact(User contactUser) {
+        if (contacts == null) {
+            contacts = new ArrayList<>();
+        }
+
+        Contacts contact = new Contacts();
+        contact.setFirstName(contactUser.getFirstname());
+        contact.setUser(this); // Set the user associated with this contact
+
+        contacts.add(contact);
+    }
+
+
 
 
 //    @JsonIgnore
@@ -52,6 +78,7 @@ public class User implements UserDetails, Principal {
 
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Role> roles;
 
 
@@ -107,6 +134,10 @@ public class User implements UserDetails, Principal {
     public boolean isEnabled() {
         return enabled;
     }
+
+//    public void addContact(String firstname) {
+//        contacts.add(firstname);
+//    }
 
 
     public String fullName(){

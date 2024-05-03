@@ -1,4 +1,4 @@
-package com.titus.socialnetworkingsite2.services;
+package com.titus.socialnetworkingsite2.model;
 
 import lombok.*;
 

@@ -1,20 +1,21 @@
 //package com.titus.socialnetworkingsite2.Dto;
 //
+//
 //import com.titus.socialnetworkingsite2.model.User;
+//import jakarta.persistence.ManyToOne;
 //import lombok.*;
-//
-//import java.util.UUID;
-//
 //
 //@Getter
 //@Setter
 //@Builder
 //@AllArgsConstructor
 //@NoArgsConstructor
-//public class BlackListUserDTO {
+//public class BlackListListDTO {
 //
-//    private String blacklistedBy;
 //    private String blacklisted;
-//    private boolean isBlacklisted;
 //
+//   @ManyToOne
+//    private User user;
+//
+//    private boolean isBlacklisted;
 //}
