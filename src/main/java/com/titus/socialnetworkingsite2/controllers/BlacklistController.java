@@ -2,7 +2,6 @@ package com.titus.socialnetworkingsite2.controllers;
 
 import com.titus.socialnetworkingsite2.Dto.BlackListDTO;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
-import com.titus.socialnetworkingsite2.model.BlackList;
 import com.titus.socialnetworkingsite2.services.BlackListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +32,7 @@ public class BlacklistController {
 
     @GetMapping("/getAllBlackListedUsers")
     @ResponseStatus(HttpStatus.OK)
-    public List<BlackList> getBlacklists() {
+    public List<String> getBlacklists() {
         return blackListService.getBlacklists();
     }
 }

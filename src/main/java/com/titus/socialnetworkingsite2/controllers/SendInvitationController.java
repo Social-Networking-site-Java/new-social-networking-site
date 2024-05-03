@@ -30,9 +30,8 @@ public class SendInvitationController {
 
 
     @GetMapping("/showAllInvitations")
-    public ResponseEntity<List<Invite>> showInvitations() {
-        List<Invite> invitations = userInvitationService.getAllInvitations();
-        return  ResponseEntity.ok(invitations);
+    public ResponseEntity<List<String>> showInvitations() {
+        return  ResponseEntity.ok(userInvitationService.getAllInvitations());
     }
 
 
@@ -44,7 +43,6 @@ public class SendInvitationController {
                     .status(HttpStatus.ACCEPTED.value())
                     .message("Invite Accepted").build();
     }
-
 
 
     @GetMapping("/declineInvite")

@@ -10,15 +10,10 @@ import java.util.List;
 
 public interface UserInvitationService {
 
-    //String sendInviteEmail(InviteDTO receiver, String inviteLink, Principal connectedUser);
-   // String sendInviteEmail(InviteDTO receiver, Principal connectedUser, String email);
 
-   // void createInvite(User user, InviteDTO receiver, String inviteToken, String email);
     GenResponse createInvite(InviteDTO isUser, BlackListDTO blackListDTO, Principal principal);
 
-   // String sendInviteEmail(InviteDTO receiver, Principal connectedUser, String email);
-
-    List<Invite> getAllInvitations();
+    List<String> getAllInvitations();
 
     void acceptInvite(String inviteCode);
     void declineInvite( String inviteCode);

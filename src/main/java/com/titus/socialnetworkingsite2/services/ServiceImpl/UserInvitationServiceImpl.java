@@ -37,11 +37,6 @@ public class UserInvitationServiceImpl implements UserInvitationService {
 
     public GenResponse createInvite(InviteDTO inviteDTO, BlackListDTO blackListDTO, Principal principal) {
 
-//        if (inviteRepository.findBySender(inviteDTO.getSender())) {
-//            return GenResponse.builder()
-//                    .status(HttpStatus.OK.value())
-//                    .message("Invite already sent 222").build();
-//        }
 
        Invite invite = inviteRepository.findBySender(inviteDTO.getSender());
 
@@ -51,41 +46,6 @@ public class UserInvitationServiceImpl implements UserInvitationService {
                     .message(" User Invite Sent").build();
 
        }
-
-//        if (inviteRepository.existsByRecipientEmail(inviteDTO.getRecipientEmail())) {
-//            return GenResponse.builder()
-//                    .status(HttpStatus.OK.value())
-//                    .message("Invite already sent").build();
-//        }
-
-
-
-
-        // Check if blackListUser is already in the blacklist
-//        if (blackListRepository.findByBlacklistedAndBlacklistedBy(blackListDTO.getBlacklisted(), blackListDTO.getBlacklistedBy())){
-//            return GenResponse.builder()
-//                    .status(HttpStatus.OK.value())
-//                    .message("User is blacklisted, can't connect ").build();
-//        }
-
-//      var existingUser =  userRepository.findByEmail(inviteDTO.getRecipientEmail());
-//        if (existingUser.isEmpty()) {
-//            return GenResponse.builder()
-//                    .status(HttpStatus.OK.value())
-//                    .message("No user").build();
-//        }
-
-
-//        BlackList blackListedUser = blackListRepository.findByBlacklistedAndBlacklistedBy(blackListDTO.getBlacklisted(), blackListDTO.getBlacklistedBy());
-//        if (Objects.equals(blackListedUser.getBlacklisted(), blackListDTO.getBlacklistedBy())) {
-//            return GenResponse.builder()
-//                    .status(HttpStatus.OK.value())
-//                    .message("User is blacklisted, can't connect ").build();
-//        }
-
-
-
-
 
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -126,39 +86,6 @@ public class UserInvitationServiceImpl implements UserInvitationService {
     }
 
 
-//    @Override
-//    public String sendInviteEmail(InviteDTO receiver, Principal connectedUser, String email) {
-//        MimeMessage message = mailSender.createMimeMessage();
-//
-//        // getting the current logged user
-//        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-//
-//        //user invitation email draft
-//        try {
-//            message.setSubject("Invitation from " + user.fullName());
-//            message.setFrom("iakwasititus@gmail.com");
-//            message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiver.getRecipientEmail()));
-//            message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(email));
-//
-//            // Build email content
-//            String content = "Hi there,\n\n" +
-//                    "I invite you to connect with me\n" +
-//                    "Please Click the link below to accept my invitation\n\n" +
-//                    generateInviteLink() + "\n\n" +
-//                    "Thanks,\n" +
-//                    user.getFirstname();
-//            message.setContent(content, "text/plain");
-//
-//            mailSender.send(message);
-//            System.out.println("Invite email sent successfully to " + email +" from " + user.fullName());
-//        } catch (MessagingException e) {
-//            System.err.println("Error sending invite email: " + e.getMessage());
-//        }
-//
-//        return "Invitation sent successfully";
-//    }
-
-
 
 
     // Method to generate a stable token
@@ -167,23 +94,14 @@ public class UserInvitationServiceImpl implements UserInvitationService {
     }
 
 
-
     public static String generateInviteLink(Invite newInvite) {
         return "http://localhost:5000/api/v1/invitation/acceptInvite?inviteCode=" + newInvite.getInviteCode();
     }
 
 
-    @Override
-    public List<Invite> getAllInvitations() {
-        return inviteRepository.findAll();
+    public List<String> getAllInvitations() {
+        return inviteRepository.findAllRecipientEmails();
     }
-
-
-
-
-
-
-
 
     @Override
     public void acceptInvite(String inviteCode) {

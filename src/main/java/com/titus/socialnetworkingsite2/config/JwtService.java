@@ -23,10 +23,6 @@ import java.util.function.Function;
 @Data
 public class JwtService {
 
-    // this is where the token will be generated
-    // decode the token
-    // extract the information form the token
-
 
     @Value("${application.security.jwt.expiration}")
     private long JWT_EXPIRATION;
