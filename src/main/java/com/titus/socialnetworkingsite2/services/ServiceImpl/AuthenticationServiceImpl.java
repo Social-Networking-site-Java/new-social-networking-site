@@ -179,14 +179,14 @@ public class AuthenticationServiceImpl {
         // check if the current password is correct
         if (!passwordEncoder.matches(request.getCurrentPassword(), isUser.getPassword() )) {
             return GenResponse.builder()
-                    .status(HttpStatus.BAD_REQUEST.value())
+                    .status(HttpStatus.ACCEPTED.value())
                     .message("Your current password is incorrect.").build();
         }
 
         // check if the two new passwords are the same
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             return GenResponse.builder()
-                    .status(HttpStatus.BAD_REQUEST.value())
+                    .status(HttpStatus.ACCEPTED.value())
                     .message("The passwords do not match.").build();
         }
         // change the password
@@ -196,7 +196,7 @@ public class AuthenticationServiceImpl {
          userRepository.save(isUser);
 
         return GenResponse.builder()
-                .status(HttpStatus.OK.value())
+                .status(HttpStatus.ACCEPTED.value())
                 .message(PASSWORD_RESET_SUCCESSFUL).build();
     }
 }

@@ -45,10 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/swagger-ui/swagger-config",
-                                "/swagger-ui/index.html",
-                                "gs-guide-websocket/**",
+                                "/chat/**",
                                 "api/v1/auth/**")
                                  .permitAll()
                                  .anyRequest()

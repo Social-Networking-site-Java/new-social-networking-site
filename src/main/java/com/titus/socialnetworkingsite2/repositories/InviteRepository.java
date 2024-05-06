@@ -16,4 +16,5 @@ public interface InviteRepository extends JpaRepository<Invite, Integer> {
     @Query("SELECT b.recipientEmail From Invite b")
     List<String> findAllRecipientEmails();
 
+    Invite findByRecipientEmail(String recipientEmail);
 }

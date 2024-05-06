@@ -4,6 +4,7 @@ import com.titus.socialnetworkingsite2.Dto.BlackListDTO;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.Dto.InviteDTO;
 import com.titus.socialnetworkingsite2.model.Invite;
+import com.titus.socialnetworkingsite2.model.User;
 import com.titus.socialnetworkingsite2.services.UserInvitationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

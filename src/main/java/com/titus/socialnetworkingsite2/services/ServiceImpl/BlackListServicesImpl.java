@@ -27,17 +27,26 @@ public class BlackListServicesImpl implements BlackListService {
     @Override
     public GenResponse addToBlackList(BlackListDTO blackListDTO) {
 
-        // Check if blackListUser is already in the blacklist
-        if (blackListRepository.existsByBlacklistedAndBlacklistedBy(blackListDTO.getBlacklisted(), blackListDTO.getBlacklistedBy())){
-            return GenResponse.builder()
-                    .status(HttpStatus.OK.value())
-                    .message( blackListDTO.getBlacklisted() + " already blacklisted!").build();
-        }
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetails user = (UserDetails) auth.getPrincipal();
 
 
+        // Check if user is already blacklisted using efficient query
+        if (blackListRepository.existsByBlacklistedAndBlacklistedBy(blackListDTO.getBlacklisted(), user.getUsername())) {
+            return GenResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .message(blackListDTO.getBlacklisted() + " already blacklisted!")
+                    .build();
+        }
+
+        System.out.println("blacklisted: " + blackListDTO.getBlacklisted());
+        System.out.println("blacklistedBy: " + blackListDTO.getBlacklistedBy());
+        System.out.println(blackListRepository.existsByBlacklistedAndBlacklistedBy(blackListDTO.getBlacklisted(), blackListDTO.getBlacklistedBy()));
+
+
+
+
+        // blacklist User
         BlackList blackList = BlackList.builder()
                 .blacklisted(blackListDTO.getBlacklisted())
                 .isBlacklisted(true)

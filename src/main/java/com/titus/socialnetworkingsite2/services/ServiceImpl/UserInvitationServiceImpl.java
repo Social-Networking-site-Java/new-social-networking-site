@@ -4,6 +4,7 @@ import com.titus.socialnetworkingsite2.Dto.BlackListDTO;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.Dto.InviteDTO;
 import com.titus.socialnetworkingsite2.model.Invite;
+import com.titus.socialnetworkingsite2.model.User;
 import com.titus.socialnetworkingsite2.repositories.BlackListRepository;
 import com.titus.socialnetworkingsite2.repositories.InviteRepository;
 import com.titus.socialnetworkingsite2.repositories.UserRepository;
@@ -38,14 +39,23 @@ public class UserInvitationServiceImpl implements UserInvitationService {
     public GenResponse createInvite(InviteDTO inviteDTO, BlackListDTO blackListDTO, Principal principal) {
 
 
-       Invite invite = inviteRepository.findBySender(inviteDTO.getSender());
+     //  Invite invite = inviteRepository.findBySender(inviteDTO.getSender());
+      // Invite invite = inviteRepository.findByRecipientEmail(inviteDTO.getRecipientEmail());
 
-       if (invite == null) {
-           return GenResponse.builder()
-                    .status(HttpStatus.OK.value())
-                    .message(" User Invite Sent").build();
+     // Optional<User> nnn = userRepository.findBySe(inviteDTO.getSender());
 
-       }
+//       if (invite != null) {
+//           return GenResponse.builder()
+//                    .status(HttpStatus.OK.value())
+//                    .message("-----------").build();
+//       }
+
+        String recipientEmail = inviteDTO.getRecipientEmail().trim(); // Trim whitespace
+        if (!isValidEmail(recipientEmail)) {
+            return GenResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .message("Invalid recipient email address").build();
+        }
 
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -96,6 +106,12 @@ public class UserInvitationServiceImpl implements UserInvitationService {
 
     public static String generateInviteLink(Invite newInvite) {
         return "http://localhost:5000/api/v1/invitation/acceptInvite?inviteCode=" + newInvite.getInviteCode();
+    }
+
+    private boolean isValidEmail(String email) {
+        // Simple email validation regex pattern
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
     }
 
 
