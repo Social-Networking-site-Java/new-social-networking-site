@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -21,7 +22,8 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
 
-    private final UserDetailImpl userDetail;
+//    private final UserDetailImpl userDetail;
+    private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
 
     @Override
@@ -42,11 +44,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetail.loadUserByUsername(userEmail);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
             System.out.println("=========================================");
             System.out.println("User: " + userDetails.getUsername());
-            System.out.println(userDetails);
+            System.out.println("User Password: --> "+ userDetails.getPassword());
+            System.out.println("User Authority  --> "+ userDetails.getAuthorities().toString());
+            System.out.println("jwt: " + jwt);
+            System.out.println();
+            System.out.println("===========================================");
+            System.out.println();
+            System.out.println();
 
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
@@ -63,10 +71,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String extractJwtRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        return bearerToken.substring(7);
-    }
+//    private String extractJwtRequest(HttpServletRequest request) {
+//        String bearerToken = request.getHeader("Authorization");
+//        return bearerToken.substring(7);
+//    }
 }
 
 

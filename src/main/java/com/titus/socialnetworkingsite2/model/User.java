@@ -38,6 +38,7 @@ public class User implements UserDetails, Principal {
     private Integer id;
     private String firstname;
     private String lastname;
+    private String username;
     private String password;
     private String profilePictureName;
     private String profilePictureUrl;

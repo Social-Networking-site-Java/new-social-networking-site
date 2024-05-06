@@ -13,14 +13,14 @@ import io.swagger.v3.oas.annotations.servers.Server;
 @OpenAPIDefinition(
         info = @Info(
                 contact = @Contact(
-                        name = "Access Key Manager",
+                        name = "Social Networking Site",
                         email = "iakwasititus@gmail.com",
-                        url = "accesskeymanager"
+                        url = "iakwasititus@gmail.com"
 
                 ) ,
-                description = "Social Networking app",
+                description = "Social Networking site app",
                 title = "API DOCUMENTATION",
-                version = "0.0.0",
+                version = "0.0.1",
                 license = @License(
                         name = "BSD License",
                         url = "link to the license"
@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         servers = {
                 @Server(
                         description = "server",
-                        url = "http://localhost:5000/api/v1/swagger-ui"
+                        url = "http://localhost:5000"
                 )
         },
         security = {

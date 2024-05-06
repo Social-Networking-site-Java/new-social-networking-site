@@ -9,6 +9,7 @@ public class HelloMessage {
 
     private String name;
     private String recipient;
+    private String content;
 
     public HelloMessage() {
     }

@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,6 +30,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter authFilter;
     private final UserDetailImpl userDetail;
+    private final UserDetailsService userDetailsService;
 
 
     // Configuring HttpSecurity
@@ -66,7 +69,8 @@ public class SecurityConfig {
             @Bean
             public AuthenticationProvider authenticationProvider() {
                 DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-                authenticationProvider.setUserDetailsService(userDetail);
+                //authenticationProvider.setUserDetailsService(userDetail);
+                authenticationProvider.setUserDetailsService(userDetailsService);
                 authenticationProvider.setPasswordEncoder(passwordEncoder());
                 return authenticationProvider;
             }
