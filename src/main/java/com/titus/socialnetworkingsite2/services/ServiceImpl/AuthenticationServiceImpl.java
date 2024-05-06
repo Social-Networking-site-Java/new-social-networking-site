@@ -16,10 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -172,110 +170,34 @@ public class AuthenticationServiceImpl {
     }
 
 
-//    // change users password
-//    public GenResponse changePassword(ChangePasswordDTO request, Principal connectedUser) {
-//
-//        if (connectedUser == null) {
-//
-////            throw new BadCredentialsException("User not authenticated");
-//            return GenResponse.builder()
-//                    .status(HttpStatus.BAD_REQUEST.value())
-//                    .message("Wrong Credentials").build();
-//        }
-//
-//        var user = (UserDetails) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-//
-////        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-////        UserDetails user = (UserDetails) auth.getCredentials();
-//
-//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//
-//        System.out.println("user: " + user.getUsername());
-//        System.out.println("connectedUser: " + connectedUser.getName());
-//        System.out.println("user: " + user.getPassword());
-//        System.out.println("user: " + user.getUsername());
-//        System.out.println("user: " + user.isAccountNonExpired());
-//        System.out.println("user: " + user.getAuthorities());
-//
-//        // check if the current password is correct
-//        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-////            throw new BadCredentialsException("Wrong password");
-//            return GenResponse.builder()
-//                    .status(HttpStatus.BAD_REQUEST.value())
-//                    .message("wrong password").build();
-//        }
-//
-//        // check if the two new passwords are the same
-//        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-//            return GenResponse.builder()
-//                    .status(HttpStatus.BAD_REQUEST.value())
-//                    .message("passwords do not match").build();
-//        }
-//
-//        // update the password
-//       // user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-//        //user.getPassword();
-//
-//      //  user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-//
-//
-//        // save the user object to the database
-//      // userRepository.save(user);
-//
-//        return GenResponse.builder()
-//                .status(HttpStatus.OK.value())
-//                .message(PASSWORD_RESET_SUCCESSFUL).build();
-//
-//
-//    }
+    // change users password
+    public GenResponse changePassword(ChangePasswordDTO request) {
 
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        var isUser = userRepository.findByEmail(user.getName()).orElseThrow();
 
-
-
-
-
-    public GenResponse changePassword(String currentPassword, String newPassword, String confirmPassword) {
-        Optional<User> user = userRepository.findByUsername(getCurrentUser().getUsername());
-        if (user.isEmpty()) {
+        // check if the current password is correct
+        if (!passwordEncoder.matches(request.getCurrentPassword(), isUser.getPassword() )) {
             return GenResponse.builder()
-                .status(HttpStatus.OK.value())
-                .message("user null").build();
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .message("Your current password is incorrect.").build();
         }
 
-        if (!passwordEncoder.matches(currentPassword, user.get().getPassword())) {
-
-            System.out.println("Current password is incorrect");
-            System.out.println(user.get().getPassword());
-            System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
-
+        // check if the two new passwords are the same
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             return GenResponse.builder()
-                    .status(HttpStatus.OK.value())
-                    .message("password not correct").build();
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .message("The passwords do not match.").build();
         }
+        // change the password
+        isUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
-        if (!newPassword.equals(confirmPassword)) {
-            return GenResponse.builder()
-                    .status(HttpStatus.OK.value())
-                    .message("mismatch").build();
-        }
-
-
-      //  user.setPassword(passwordEncoder.encode(newPassword));
-     //   userRepository.save(user);
+        // save the user object to the database
+         userRepository.save(isUser);
 
         return GenResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message(PASSWORD_RESET_SUCCESSFUL).build();
     }
-
-    public UserDetails getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            return (UserDetails) authentication.getPrincipal();
-        }
-        return null;
-    }
-
-
 }
 

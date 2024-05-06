@@ -42,7 +42,6 @@ public class AuthController {
     }
 
 
-
     // authenticate
     @PostMapping("/authentication")
     @Operation(summary = "Logging In the User")
@@ -59,57 +58,11 @@ public class AuthController {
     }
 
 
-//    // password reset
-//    @PatchMapping("/reset-password")
-//    @Operation(summary = "Resetting User Password")
-//    public ResponseEntity<GenResponse> resetPassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO, User user) {
-//        try {
-//            return new ResponseEntity<>(authenticationService.changePassword(changePasswordDTO, user),HttpStatus.OK);
-//        } catch (BadCredentialsException e) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//
-//        }
-//    }
-
-//    @PostMapping("/reset-password")
-//    public ResponseEntity<String> resetPassword(@RequestBody ChangePassCodeDtoo resetRequest) {
-//        // Validate resetRequest fields
-//        if (!resetRequest.getNewPassword().equals(resetRequest.getConfirmPassword())) {
-//            return ResponseEntity.badRequest().body("New password and confirm password do not match.");
-//        }
-//
-//        // Call service method to reset password
-//        boolean success = authenticationService.resetPassword(resetRequest.getEmail(), resetRequest.getCurrentPassword(), resetRequest.getNewPassword());
-//
-//        if (success) {
-//            return ResponseEntity.ok("Password reset successfully.");
-//        } else {
-//            return ResponseEntity.badRequest().body("Failed to reset password. Please check your credentials.");
-//        }
-//    }
-
-
-//
-//    @PatchMapping("/reset-password")
-//    public ResponseEntity<Void> changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO, Principal principal) throws MessagingException {
-//
-//        authenticationService.changePassword(changePasswordDTO, principal);
-//        return ResponseEntity.ok().build();
-//    }
-
-
-    @PutMapping("/change-password")
-    public ResponseEntity<GenResponse> changePassword(@RequestBody ChangePasswordRequest request) {
-        authenticationService.changePassword(
-                request.getCurrentPassword(), request.getNewPassword(), request.getConfirmPassword());
-        return ResponseEntity.ok().build();
-
+    @PatchMapping("/change-password")
+    @Operation(summary = "Password Change")
+    public ResponseEntity<GenResponse> changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO) {
+        return new ResponseEntity<>( authenticationService.changePassword(changePasswordDTO ), HttpStatus.OK);
     }
-
-
-
-
-
 
     @PostMapping("/reset-profile")
     @Operation(summary = "Resetting User Profile")
