@@ -5,9 +5,8 @@ import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.Dto.InviteDTO;
 import com.titus.socialnetworkingsite2.model.Invite;
 import com.titus.socialnetworkingsite2.model.User;
-import com.titus.socialnetworkingsite2.repositories.BlackListRepository;
 import com.titus.socialnetworkingsite2.repositories.InviteRepository;
-import com.titus.socialnetworkingsite2.repositories.UserRepository;
+import com.titus.socialnetworkingsite2.services.UserDetailImpl;
 import com.titus.socialnetworkingsite2.services.UserInvitationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +21,10 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.INVALID_RECIPIENT_EMAIL_ADDRESS;
+import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.INVITE_SENT_SUCCESSFULLY;
 
 @Service
 @RequiredArgsConstructor
@@ -29,32 +32,23 @@ public class UserInvitationServiceImpl implements UserInvitationService {
 
     private final JavaMailSender mailSender;
     private final InviteRepository inviteRepository;
-    private final BlackListRepository blackListRepository;
-    private final UserRepository userRepository;
+
 
     // Generate a stable token at the class level
     private static final String INVITATION_TOKEN = generateToken();
+    private final UserDetailImpl userDetailImpl;
 
 
     public GenResponse createInvite(InviteDTO inviteDTO, BlackListDTO blackListDTO, Principal principal) {
 
 
-     //  Invite invite = inviteRepository.findBySender(inviteDTO.getSender());
-      // Invite invite = inviteRepository.findByRecipientEmail(inviteDTO.getRecipientEmail());
 
-     // Optional<User> nnn = userRepository.findBySe(inviteDTO.getSender());
-
-//       if (invite != null) {
-//           return GenResponse.builder()
-//                    .status(HttpStatus.OK.value())
-//                    .message("-----------").build();
-//       }
 
         String recipientEmail = inviteDTO.getRecipientEmail().trim(); // Trim whitespace
         if (!isValidEmail(recipientEmail)) {
             return GenResponse.builder()
                     .status(HttpStatus.BAD_REQUEST.value())
-                    .message("Invalid recipient email address").build();
+                    .message(INVALID_RECIPIENT_EMAIL_ADDRESS).build();
         }
 
 
@@ -72,12 +66,15 @@ public class UserInvitationServiceImpl implements UserInvitationService {
         inviteRepository.save(newInvite);
 
 
+
+
+
         SimpleMailMessage message = getSimpleMailMessage(inviteDTO, newInvite, principal);
         mailSender.send(message);
 
         return GenResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .message("Invite sent successfully to " + inviteDTO.getRecipientEmail()).build();
+                .message(INVITE_SENT_SUCCESSFULLY + inviteDTO.getRecipientEmail()).build();
 
 
 
@@ -118,6 +115,45 @@ public class UserInvitationServiceImpl implements UserInvitationService {
     public List<String> getAllInvitations() {
         return inviteRepository.findAllRecipientEmails();
     }
+
+
+//
+//    @Override
+//    public List<String> getAllAcceptedInvitations() {
+//        return inviteRepository.findAllByAccepted();
+//    }
+
+
+
+
+
+//    @Override
+//    public List<InviteDTO> getAllAcceptedInvitations() {
+//        return inviteRepository.findAllByAccepted()
+//                .stream()
+//                .map(invite -> new InviteDTO(invite))
+//                .collect(Collectors.toList());
+//    }
+
+
+    public List<Object[]> getAllAcceptedInvitations() {
+        return inviteRepository.findByAcceptedTrue()
+                .stream()
+               // .map(invite -> new Object[]{invite.getRecipientEmail()})
+                .map(invite -> new Object[]{invite.getRecipientEmail()})
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void acceptInvite(String inviteCode) {

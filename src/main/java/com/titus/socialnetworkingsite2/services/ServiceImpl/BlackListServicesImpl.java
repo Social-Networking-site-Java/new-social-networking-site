@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.SUCCESSFULLY_ADDED_TO_BLACKLIST;
+import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.SUCCESSFULLY_REMOVE_FROM_BLACKLIST;
+
 @Service
 @RequiredArgsConstructor
 public class BlackListServicesImpl implements BlackListService {
@@ -56,7 +59,7 @@ public class BlackListServicesImpl implements BlackListService {
         blackListRepository.save(blackList);
         return GenResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .message("Successfully added to BlackList").build();
+                .message(SUCCESSFULLY_ADDED_TO_BLACKLIST).build();
     }
 
 
@@ -74,7 +77,7 @@ public class BlackListServicesImpl implements BlackListService {
 
         return GenResponse.builder()
                 .status(HttpStatus.OK.value())
-                .message("Successfully removed from BlackList").build();
+                .message(SUCCESSFULLY_REMOVE_FROM_BLACKLIST).build();
     }
 
     @Override

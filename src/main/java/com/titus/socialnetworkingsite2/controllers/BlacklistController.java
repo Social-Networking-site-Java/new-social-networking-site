@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/blacklist/")
+@RequestMapping("/api/v1/blacklist")
 public class BlacklistController {
 
     private final BlackListService blackListService;

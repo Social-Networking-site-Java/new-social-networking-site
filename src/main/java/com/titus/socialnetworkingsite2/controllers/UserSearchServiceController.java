@@ -15,8 +15,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("api/v1/auth")
-//@RequestMapping("search")
+@RequestMapping("api/v1/users")
 public class UserSearchServiceController {
 
     private final UserSearchServices userSearchServices;
@@ -27,13 +26,12 @@ public class UserSearchServiceController {
         List<User> users = userSearchServices.searchUser(searchTeam);
         if (users.isEmpty()) {
             throw new GlobalExceptionHandler.UserAlreadyBlacklistedException("User not found");
-
         }
         return ResponseEntity.ok(users);
     }
 
 
-    @GetMapping("/allUsers")
+    @GetMapping("/getAllUsers")
     public ResponseEntity<List<User>> allUser() {
         List<User> users = userSearchServices.getAllUsers();
         return ResponseEntity.ok(users);

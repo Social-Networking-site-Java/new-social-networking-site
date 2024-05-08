@@ -22,9 +22,10 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
 
-//    private final UserDetailImpl userDetail;
-    private final UserDetailsService userDetailsService;
+    //private final UserDetailImpl userDetail;
+  //  private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final UserDetailImpl userDetailImpl;
 
     @Override
     protected void doFilterInternal(
@@ -44,14 +45,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+            UserDetails userDetails = userDetailImpl.loadUserByUsername(userEmail);
 
+            System.out.println();
             System.out.println("=========================================");
             System.out.println("User: " + userDetails.getUsername());
             System.out.println("User Password: --> "+ userDetails.getPassword());
             System.out.println("User Authority  --> "+ userDetails.getAuthorities().toString());
-            System.out.println("jwt: " + jwt);
-            System.out.println();
+            System.out.println("jwt ---> " + jwt);
+            System.out.println("userEmail --> " + userEmail);
             System.out.println("===========================================");
             System.out.println();
             System.out.println();

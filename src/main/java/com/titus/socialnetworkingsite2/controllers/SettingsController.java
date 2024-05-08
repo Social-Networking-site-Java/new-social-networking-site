@@ -1,4 +1,4 @@
-package com.titus.socialnetworkingsite2.controllers.Settings;
+package com.titus.socialnetworkingsite2.controllers;
 
 import com.titus.socialnetworkingsite2.Dto.ChangePasswordDTO;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
@@ -15,21 +15,23 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/settings")
 public class SettingsController {
 
     private final SettingsService settingsService;
 
 
-    @PatchMapping("/change-password")
+    @PutMapping("/change-password")
     @Operation(summary = "Password Change")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<GenResponse> changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO) {
-        return new ResponseEntity<>( settingsService.changePassword(changePasswordDTO ), HttpStatus.OK);
+        return new ResponseEntity<>( settingsService.changePassword(changePasswordDTO ), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/reset-profile")
+    @PostMapping("/change-profile")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Resetting User Profile")
     public ResponseEntity<GenResponse> profileSettings(@RequestParam("image") MultipartFile image) throws IOException {
-        return new ResponseEntity<>(settingsService.resetProfile(image),HttpStatus.OK);
+        return new ResponseEntity<>(settingsService.changeProfile(image),HttpStatus.ACCEPTED);
     }
 }

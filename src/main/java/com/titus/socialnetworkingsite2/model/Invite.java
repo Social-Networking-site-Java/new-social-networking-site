@@ -22,4 +22,7 @@ public class Invite {
     private String inviteCode;
     private String sender;
     private boolean accepted;
+
+    @ManyToOne
+    private User user;
 }

@@ -3,7 +3,6 @@ package com.titus.socialnetworkingsite2.controllers;
 import com.titus.socialnetworkingsite2.Dto.BlackListDTO;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.Dto.InviteDTO;
-import com.titus.socialnetworkingsite2.model.Invite;
 import com.titus.socialnetworkingsite2.model.User;
 import com.titus.socialnetworkingsite2.services.UserInvitationService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("invitations")
 @RequestMapping("api/v1/invitation/")
 public class InvitationController {
 
@@ -25,14 +23,24 @@ public class InvitationController {
 
 
     @PostMapping("/invite")
-    public ResponseEntity<GenResponse> sendInvitation(@RequestBody  InviteDTO inviteDTO, BlackListDTO blackListDTO, Principal principal) {
-        return new ResponseEntity<>(userInvitationService.createInvite(inviteDTO, blackListDTO, principal), HttpStatus.CREATED);
+    public ResponseEntity<GenResponse> sendInvitation(
+            @RequestBody  InviteDTO inviteDTO,
+            BlackListDTO blackListDTO,
+            Principal principal) {
+        return new ResponseEntity<>(
+                userInvitationService.createInvite(inviteDTO,
+                        blackListDTO, principal), HttpStatus.CREATED);
     }
 
 
     @GetMapping("/showAllInvitations")
     public ResponseEntity<List<String>> showInvitations() {
         return  ResponseEntity.ok(userInvitationService.getAllInvitations());
+    }
+
+    @GetMapping("/showAllAcceptedInvitations")
+    public ResponseEntity<List<Object[]>> showAllAcceptedInvitations() {
+        return  ResponseEntity.ok(userInvitationService.getAllAcceptedInvitations());
     }
 
 

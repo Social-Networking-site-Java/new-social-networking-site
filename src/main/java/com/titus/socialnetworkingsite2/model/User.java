@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Embeddable
 @Entity
 @Table(name = "\"User\"")
 @EntityListeners(AuditingEntityListener.class) // this will keep truck of when the user is created and the last time it was modified
@@ -48,6 +49,10 @@ public class User implements UserDetails, Principal {
     private String email;
     private boolean accountLocked;
     private boolean enabled;
+
+
+    @OneToMany(mappedBy = "user")
+    private List<Invite> invites;
 
 
     @OneToMany(mappedBy = "user")
@@ -95,7 +100,8 @@ public class User implements UserDetails, Principal {
 
     @Override
     public String getName() {
-        return email;
+       // return email;
+        return fullName();
     }
 
     @Override

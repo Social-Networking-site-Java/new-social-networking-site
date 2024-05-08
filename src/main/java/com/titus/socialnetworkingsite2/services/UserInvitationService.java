@@ -15,6 +15,11 @@ public interface UserInvitationService {
     GenResponse createInvite(InviteDTO isUser, BlackListDTO blackListDTO, Principal principal);
 
     List<String> getAllInvitations();
+   // List<String> getAllAcceptedInvitations(boolean accept);
+
+   // List<String> getAllAcceptedInvitations(boolean accept);
+
+    List<Object[]> getAllAcceptedInvitations();
 
     void acceptInvite(String inviteCode);
     void declineInvite( String inviteCode);

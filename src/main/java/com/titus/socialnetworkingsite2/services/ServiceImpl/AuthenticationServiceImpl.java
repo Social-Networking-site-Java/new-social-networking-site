@@ -3,6 +3,7 @@ package com.titus.socialnetworkingsite2.services.ServiceImpl;
 
 import com.titus.socialnetworkingsite2.Dto.*;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
+import com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants;
 import com.titus.socialnetworkingsite2.Email.EmailService;
 import com.titus.socialnetworkingsite2.Email.EmailTemplateName;
 import com.titus.socialnetworkingsite2.config.JwtService;
@@ -29,6 +30,9 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.ACCOUNT_ACTIVATION_SUCCESSFULLY;
+import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.AUTH_SUCCESS;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl {
@@ -45,10 +49,8 @@ public class AuthenticationServiceImpl {
     @Value("${application.mailing.frontend.activation-url}")
     // String activationUrl;
     String ACTIVATION_URL;
-    String REGISTRATION_SUCCESS = "User Created Successfully. Please check email to verify your account";
     String USER_NOT_FOUND = "User already Exist";
-    String PASSWORD_RESET_SUCCESSFUL = "Password Reset Successful";
-    String AUTH_SUCCESS = "Authentication successful";
+
 
 
     // Registering the user
@@ -82,7 +84,7 @@ public class AuthenticationServiceImpl {
 
         return GenResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .message(REGISTRATION_SUCCESS).build();
+                .message(ResponseConstants.SIGN_UP_SUCCESS).build();
     }
 
     private void sendValidationEmail(User user) throws MessagingException {
@@ -166,38 +168,10 @@ public class AuthenticationServiceImpl {
         savedToken.setValidateAt(LocalDateTime.now());
         tokenRepository.save(savedToken);
 
-        return "Account Activated Successfully!";
+        return ACCOUNT_ACTIVATION_SUCCESSFULLY;
     }
 
 
-    // change users password
-    public GenResponse changePassword(ChangePasswordDTO request) {
 
-        Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        var isUser = userRepository.findByEmail(user.getName()).orElseThrow();
-
-        // check if the current password is correct
-        if (!passwordEncoder.matches(request.getCurrentPassword(), isUser.getPassword() )) {
-            return GenResponse.builder()
-                    .status(HttpStatus.ACCEPTED.value())
-                    .message("Your current password is incorrect.").build();
-        }
-
-        // check if the two new passwords are the same
-        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            return GenResponse.builder()
-                    .status(HttpStatus.ACCEPTED.value())
-                    .message("The passwords do not match.").build();
-        }
-        // change the password
-        isUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
-
-        // save the user object to the database
-         userRepository.save(isUser);
-
-        return GenResponse.builder()
-                .status(HttpStatus.ACCEPTED.value())
-                .message(PASSWORD_RESET_SUCCESSFUL).build();
-    }
 }
 
