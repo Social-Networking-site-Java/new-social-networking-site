@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 //@RequestMapping("invitations")
 @RequestMapping("api/v1/invitation/")
-public class SendInvitationController {
+public class InvitationController {
 
     private final UserInvitationService userInvitationService;
 

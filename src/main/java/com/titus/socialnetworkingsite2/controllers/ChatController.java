@@ -40,7 +40,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
-public class GreetingController {
+public class ChatController {
 
     private final SimpMessagingTemplate messagingTemplate;
 
