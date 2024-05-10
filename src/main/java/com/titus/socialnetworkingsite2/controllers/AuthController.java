@@ -20,7 +20,6 @@ public class AuthController {
 
     private final AuthenticationServiceImpl authenticationService;
 
-
     // registering user
     @PostMapping("/register")
     @Operation(summary = "registering a user")

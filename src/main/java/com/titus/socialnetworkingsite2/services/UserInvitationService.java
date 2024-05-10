@@ -4,23 +4,19 @@ import com.titus.socialnetworkingsite2.Dto.BlackListDTO;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.Dto.InviteDTO;
 import com.titus.socialnetworkingsite2.model.Invite;
-import com.titus.socialnetworkingsite2.model.User;
 
 import java.security.Principal;
 import java.util.List;
 
 public interface UserInvitationService {
 
+    GenResponse createInvite(InviteDTO isUser);
 
-    GenResponse createInvite(InviteDTO isUser, BlackListDTO blackListDTO, Principal principal);
+    List<Invite> getAllReceivedInvitation(String sender);
 
-    List<String> getAllInvitations();
-   // List<String> getAllAcceptedInvitations(boolean accept);
-
-   // List<String> getAllAcceptedInvitations(boolean accept);
-
-    List<Object[]> getAllAcceptedInvitations();
+    List<Invite> getAllAcceptedInvitations(String sender);
 
     void acceptInvite(String inviteCode);
     void declineInvite( String inviteCode);
+    List<Invite> getAllInvitations();
 }

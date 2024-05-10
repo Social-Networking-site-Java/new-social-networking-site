@@ -2,7 +2,8 @@ package com.titus.socialnetworkingsite2.services.ServiceImpl;
 
 import com.titus.socialnetworkingsite2.Dto.ChangePasswordDTO;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
-import com.titus.socialnetworkingsite2.model.User;
+import com.titus.socialnetworkingsite2.model.UserProfileSettings;
+import com.titus.socialnetworkingsite2.repositories.ProfilePictureRepository;
 import com.titus.socialnetworkingsite2.repositories.UserRepository;
 import com.titus.socialnetworkingsite2.services.SettingsService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class SettingsServiceImpl  implements SettingsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProfilePictureRepository profilePictureRepository;
 
 
 
@@ -67,10 +69,21 @@ public class SettingsServiceImpl  implements SettingsService {
         String folder_path = "D:\\profile-reset-folder\\";
         String filePath = folder_path + file.getOriginalFilename();
 
-        User setProfilePicture = userRepository.save(User.builder()
-                .profilePictureName(file.getOriginalFilename())
-                .profilePictureUrl(filePath).build());
+//      UserProfileSettings userProfileSettings = profilePictureRepository.save(
+//              UserProfileSettings.builder()
+//                .profilePictureName(file.getOriginalFilename())
+//                .profilePictureUrl(filePath).build());
+
+//      UserProfileSettings userProfileSettings1 = UserProfileSettings
+
+
+      UserProfileSettings userProfileSettings1 = new UserProfileSettings();
+      userProfileSettings1.setProfilePictureUrl(filePath);
+      userProfileSettings1.setProfilePictureName(file.getOriginalFilename());
+
+
         file.transferTo(new File(filePath));
+        profilePictureRepository.save(userProfileSettings1);
 
         return GenResponse.builder()
                 .status(HttpStatus.OK.value())

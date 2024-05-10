@@ -30,8 +30,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.ACCOUNT_ACTIVATION_SUCCESSFULLY;
-import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.AUTH_SUCCESS;
+import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,8 +46,8 @@ public class AuthenticationServiceImpl {
 
 
     @Value("${application.mailing.frontend.activation-url}")
-    // String activationUrl;
     String ACTIVATION_URL;
+
     String USER_NOT_FOUND = "User already Exist";
 
 
@@ -56,20 +55,30 @@ public class AuthenticationServiceImpl {
     // Registering the user
     public GenResponse register(RegistrationDTO request) throws MessagingException {
 
-        var existingUser = userRepository.findByEmail(request.getEmail());
+
+        var existingUser = userRepository.findByEmail(request.getEmail().trim());
         if (existingUser.isPresent()) {
             return GenResponse.builder()
                     .status(HttpStatus.CREATED.value())
                     .message(USER_NOT_FOUND).build();
         }
 
+      var existingFirstname = userRepository.findByUsername(request.getUserName().trim());
+        if (existingFirstname.isPresent()) {
+            return GenResponse.builder()
+                    .status(HttpStatus.CREATED.value())
+                    .message(USERNAME_IS_TAKEN).build();
+        }
+
 
         var userRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new IllegalStateException("ROLE USER not found"));
+                .orElseThrow(() -> new IllegalStateException(ROLE_USER_NOT_FOUND));
 
         var user = User.builder()
-                .firstname(request.getFirstName())
-                .lastname(request.getLastName())
+               // .firstname(request.getFirstName())
+               // .lastname(request.getLastName())
+                .fullName(request.getFullName())
+                .username(request.getUserName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .accountLocked(false)
@@ -84,7 +93,7 @@ public class AuthenticationServiceImpl {
 
         return GenResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .message(ResponseConstants.SIGN_UP_SUCCESS).build();
+                .message(SIGN_UP_SUCCESS).build();
     }
 
     private void sendValidationEmail(User user) throws MessagingException {
@@ -93,7 +102,7 @@ public class AuthenticationServiceImpl {
         // send email
         emailService.sendEmail(
                 user.getEmail(),
-                user.fullName(),
+                user.getFullName(),
                 EmailTemplateName.ACTIVATE_ACCOUNT,
                 ACTIVATION_URL,
                 newToken,
@@ -108,7 +117,7 @@ public class AuthenticationServiceImpl {
         var token = Token.builder()
                 .token(generateToken)
                 .createdAt(LocalDateTime.now())
-                .expiredAt(LocalDateTime.now().plusMinutes(15))
+                .expiredAt(LocalDateTime.now().plusMinutes(30))
                 .user(user)
                 .build();
 
@@ -142,7 +151,7 @@ public class AuthenticationServiceImpl {
         Optional<User> userExists = userRepository.findByEmail(request.getEmail());
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("fullName", userExists.get().fullName());
+        claims.put("fullName", userExists.get().getFullName());
 
         UserDetails user = (UserDetails) auth.getPrincipal();
         String jetToken = jwtService.generateToken(claims, user);
@@ -154,14 +163,14 @@ public class AuthenticationServiceImpl {
     public String activateAccount(String token) throws MessagingException {
 
         Token savedToken = tokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Token not found"));
+                .orElseThrow(() -> new RuntimeException(TOKEN_NOT_FOUND));
 
         if (LocalDateTime.now().isAfter(savedToken.getExpiredAt())) {
             sendValidationEmail(savedToken.getUser());
-            throw new RuntimeException("Token is expired, But a new one has been created and sent to your account.");
+            throw new RuntimeException(TOKEN_EXPIRED);
         }
         var user = userRepository.findById(savedToken.getUser().getId())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
         user.setEnabled(true);
         userRepository.save(user);
 

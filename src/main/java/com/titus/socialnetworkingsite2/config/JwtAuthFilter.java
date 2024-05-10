@@ -23,9 +23,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 
     //private final UserDetailImpl userDetail;
-  //  private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
-    private final UserDetailImpl userDetailImpl;
+    //private final UserDetailImpl userDetailImpl;
 
     @Override
     protected void doFilterInternal(
@@ -45,7 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailImpl.loadUserByUsername(userEmail);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
             System.out.println();
             System.out.println("=========================================");

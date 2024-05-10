@@ -22,28 +22,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+
+@Entity
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-@Entity
 @Table(name = "\"User\"")
 @EntityListeners(AuditingEntityListener.class) // this will keep truck of when the user is created and the last time it was modified
 // implement getName from principal
 public class User implements UserDetails, Principal {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String firstname;
-    private String lastname;
+
+    private String fullName;
+
+    @Column(unique = true)
     private String username;
     private String password;
-    private String profilePictureName;
-    private String profilePictureUrl;
-    private Status status;
 
     @Column(unique = true)
     private String email;
@@ -51,27 +51,27 @@ public class User implements UserDetails, Principal {
     private boolean enabled;
 
 
-    @OneToMany(mappedBy = "user")
-    private List<Invite> invites;
+//    @OneToMany(mappedBy = "user")
+//    private List<Invite> invites;
 
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Contacts> contacts;
+//    @OneToMany(mappedBy = "user")
+//    @JsonIgnore
+//    private List<Contacts> contacts;
 
     // Method to add a contact to the user's contacts list
-    @JsonIgnore
-    public void addContact(User contactUser) {
-        if (contacts == null) {
-            contacts = new ArrayList<>();
-        }
+//    @JsonIgnore
+//    public void addContact(User contactUser) {
+//        if (contacts == null) {
+//            contacts = new ArrayList<>();
+//        }
 
-        Contacts contact = new Contacts();
-        contact.setFirstName(contactUser.getFirstname());
-        contact.setUser(this); // Set the user associated with this contact
-
-        contacts.add(contact);
-    }
+//        Contacts contact = new Contacts();
+//        contact.setFirstName(contactUser.fullName);
+//        contact.setUser(this); // Set the user associated with this contact
+//
+//        contacts.add(contact);
+//    }
 
 
 
@@ -100,8 +100,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public String getName() {
-       // return email;
-        return fullName();
+        return email;
     }
 
     @Override
@@ -147,7 +146,7 @@ public class User implements UserDetails, Principal {
 //    }
 
 
-    public String fullName(){
-        return  firstname.toUpperCase() + " " + lastname;
-    }
+//    public String fullName(){
+//        return  firstname.toUpperCase() + " " + lastname;
+//    }
 }

@@ -51,13 +51,13 @@ import lombok.Setter;
 @Builder
 public class RegistrationDTO {
 
-    @NotEmpty(message = "firstName is required")
-    @NotBlank(message = "firstName is required")
-    private String firstName;
+    @NotEmpty(message = "Username is required")
+    @NotBlank(message = "Username is required")
+    private String userName;
 
     @NotEmpty(message = "lastName is required")
     @NotBlank(message = "lastName is required")
-    private String lastName;
+    private String fullName;
 
     @Email(message = "Email not well formatted")
     @NotEmpty(message = "Email is required")

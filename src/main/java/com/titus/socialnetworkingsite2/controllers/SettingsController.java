@@ -21,7 +21,7 @@ public class SettingsController {
     private final SettingsService settingsService;
 
 
-    @PutMapping("/change-password")
+    @PatchMapping("/change-password")
     @Operation(summary = "Password Change")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<GenResponse> changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO) {

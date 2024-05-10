@@ -23,6 +23,6 @@ public class Invite {
     private String sender;
     private boolean accepted;
 
-    @ManyToOne
-    private User user;
+//    @ManyToOne
+//    private User user;
 }

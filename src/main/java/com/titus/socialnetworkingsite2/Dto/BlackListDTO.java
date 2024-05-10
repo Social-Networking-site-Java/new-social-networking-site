@@ -11,8 +11,8 @@ import lombok.*;
 public class BlackListDTO {
 
     private String blacklisted;
-    private String blacklistedBy;
-    private boolean isBlacklisted;
+   // private String blacklistedBy;
+   // private boolean isBlacklisted;
 
 
 
