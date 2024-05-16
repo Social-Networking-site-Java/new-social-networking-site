@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface UserSearchRepository extends JpaRepository<User, Integer> {
-    List<User> findByEmailContainingOrUsernameContaining(String searchTerm, String searchTerm1);
+    List<User> findByEmailContainingOrUsernameContainingIgnoreCase(String searchTerm, String searchTerm1);
 }

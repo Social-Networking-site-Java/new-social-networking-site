@@ -28,7 +28,9 @@ public class JwtService {
     private long JWT_EXPIRATION;
 
     @Value("${application.security.jwt.secret-key}")
-    private String SECRETE_KRY;
+    private String SECRETE_KEY;
+
+
 
 
     public String extractUsername(String token) {
@@ -76,7 +78,6 @@ public class JwtService {
                 .claim("authorities", authorities)
                 .signWith(getSignInKey())
                 .compact();
-
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails){
@@ -95,7 +96,7 @@ public class JwtService {
 
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRETE_KRY);
+        byte[] keyBytes = Decoders.BASE64.decode(SECRETE_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

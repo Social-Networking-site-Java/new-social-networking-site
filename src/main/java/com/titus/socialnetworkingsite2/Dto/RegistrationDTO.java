@@ -38,6 +38,7 @@
 
 package com.titus.socialnetworkingsite2.Dto;
 
+import com.titus.socialnetworkingsite2.Password.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -66,7 +67,10 @@ public class RegistrationDTO {
 
     @NotEmpty(message = "Password is required")
     @NotBlank(message = "Password is required")
+    @ValidPassword
     @Size(min = 8, message = "Password should be 8 characters long")
     private String password;
+
+
 
 }

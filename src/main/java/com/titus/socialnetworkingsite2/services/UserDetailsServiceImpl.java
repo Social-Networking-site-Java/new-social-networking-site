@@ -61,7 +61,6 @@ package com.titus.socialnetworkingsite2.services;
 import com.titus.socialnetworkingsite2.model.User;
 import com.titus.socialnetworkingsite2.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -78,20 +77,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // Retrieve user from the repository
-        Optional<User> userOptional = userRepository.findByEmailIgnoreCase(email.trim());
+        Optional<User> userOptional = userRepository.findByEmail(email.trim());
 
         // Throw exception if user not found
-        User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userOptional.orElseThrow(() ->
+                new UsernameNotFoundException("User not found"));
 
         // Return UserDetails object
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
-                .authorities((GrantedAuthority) user.getRoles()) // Assuming user.getRoles() returns a Collection of authorities
+                .authorities(user.getAuthorities())
                 .accountExpired(false)
                 .accountLocked(false)
                 .credentialsExpired(false)
-                .disabled(!user.isEnabled()) // Assuming isEnabled() returns whether the user is enabled or not
+                .disabled(!user.isEnabled())
                 .build();
     }
 }

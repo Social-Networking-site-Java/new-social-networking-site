@@ -1,8 +1,11 @@
 package com.titus.socialnetworkingsite2.repositories;
 
-import com.titus.socialnetworkingsite2.model.ChatMessage;
+import com.titus.socialnetworkingsite2.Dto.Response.MessageContent;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
+
+@Repository
+public interface ChatMessageRepository extends JpaRepository<MessageContent, String> {
 
 }

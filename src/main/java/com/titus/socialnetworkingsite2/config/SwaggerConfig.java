@@ -16,9 +16,14 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         name = "Social Networking Site",
                         email = "iakwasititus@gmail.com",
                         url = "iakwasititus@gmail.com"
-
                 ) ,
-                description = "Social Networking site app",
+                description = """
+                        Social networking has become an integral part of modern communication and socialisation.
+                        However, many existing social networking sites have issues such as cyberbullying, privacy
+                        concerns, or fake accounts. A new social networking site that prioritises user privacy and safety
+                        and provides a positive online environment for users to connect and share content could meet
+                        the needs of users looking for a more positive and secure social networking experience.
+                        AmaliTech has assigned this project to you to build for a potential client.""",
                 title = "API DOCUMENTATION",
                 version = "0.0.1",
                 license = @License(
@@ -44,7 +49,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         name= "bearerauth",
         description = "bearerauthentication",
         scheme = "bearer",
-        type = SecuritySchemeType.HTTP, bearerFormat = "jwt", in = SecuritySchemeIn.HEADER
-)
+        type = SecuritySchemeType.HTTP, bearerFormat = "jwt", in = SecuritySchemeIn.HEADER)
+
 public class SwaggerConfig {
 }

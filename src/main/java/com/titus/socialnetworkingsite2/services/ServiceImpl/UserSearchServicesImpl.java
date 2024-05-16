@@ -18,7 +18,7 @@ public class UserSearchServicesImpl implements UserSearchServices {
     @Override
     public List<User> searchUser(String searchTerm) {
 
-        return userSearchRepository.findByEmailContainingOrUsernameContaining
+        return userSearchRepository.findByEmailContainingOrUsernameContainingIgnoreCase
                 (searchTerm, searchTerm);
     }
 

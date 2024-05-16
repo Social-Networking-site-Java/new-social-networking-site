@@ -18,7 +18,7 @@ public class Invite {
     @Id
     @GeneratedValue
     private Integer id;
-    private String recipientEmail;
+    private String recipient;
     private String inviteCode;
     private String sender;
     private boolean accepted;

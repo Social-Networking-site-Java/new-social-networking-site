@@ -17,8 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
-import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.PASSWORD_CHANGE_SUCCESS;
-import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.PASSWORD_IS_INCORRECT;
+import static com.titus.socialnetworkingsite2.Dto.Response.ResponseConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,8 +47,10 @@ public class SettingsServiceImpl  implements SettingsService {
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             return GenResponse.builder()
                     .status(HttpStatus.ACCEPTED.value())
-                    .message("The passwords do not match.").build();
+                    .message(PASSWORD_DOES_NOT_MATCH).build();
         }
+
+
         // change the password
         isUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
 

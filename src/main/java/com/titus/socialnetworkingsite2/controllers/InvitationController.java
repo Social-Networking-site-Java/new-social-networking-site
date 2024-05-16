@@ -1,6 +1,5 @@
 package com.titus.socialnetworkingsite2.controllers;
 
-import com.titus.socialnetworkingsite2.Dto.BlackListDTO;
 import com.titus.socialnetworkingsite2.Dto.Response.GenResponse;
 import com.titus.socialnetworkingsite2.Dto.InviteDTO;
 import com.titus.socialnetworkingsite2.model.Invite;
@@ -10,17 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/invitation/")
+@RequestMapping("/api/v1/invitation")
 public class InvitationController {
 
     private final UserInvitationService userInvitationService;
@@ -33,30 +28,24 @@ public class InvitationController {
                 userInvitationService.createInvite(inviteDTO), HttpStatus.CREATED);
     }
 
-    @GetMapping("/acceptInvite/{inviteCode}")
+    @GetMapping("/accept-invite/{inviteCode}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Pass invite code to accept Invite")
     public GenResponse acceptInvite(@PathVariable("inviteCode") String inviteCode) {
-            userInvitationService.acceptInvite(inviteCode);
-            return GenResponse.builder()
-                    .status(HttpStatus.ACCEPTED.value())
-                    .message("Invite Accepted").build();
+            return  userInvitationService.acceptInvite(inviteCode);
     }
 
 
-    @DeleteMapping("/declineInvite/{inviteCode}")
+    @DeleteMapping("/decline-invite/{inviteCode}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Pass invite code to Delcine Invite")
     public GenResponse declineInvite(@PathVariable("inviteCode")String inviteCode) {
-            userInvitationService.declineInvite(inviteCode);
-            return GenResponse.builder()
-                    .status(HttpStatus.ACCEPTED.value())
-                    .message("Invite Decline").build();
+            return userInvitationService.declineInvite(inviteCode);
     }
 
 
     // Get All received Invitation
-    @GetMapping("/getAllReceivedInvites/{sender}")
+    @GetMapping("/get-all-received-invites/{sender}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "All Received Invites")
     public List<Invite> getAllReceivedInvites(@PathVariable("sender") String sender){
@@ -64,14 +53,14 @@ public class InvitationController {
     }
 
 
-    @GetMapping("/getAllAcceptedInvitations/{sender}")
+    @GetMapping("/get-all-accepted-invitations/{sender}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all accepted invites")
     public ResponseEntity<List<Invite>> showAllAcceptedInvitations(@PathVariable("sender") String sender) {
         return  ResponseEntity.ok(userInvitationService.getAllAcceptedInvitations(sender));
     }
 
-    @GetMapping("getAllInvitations")
+    @GetMapping("get-all-invitations")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all invitations")
     public ResponseEntity<List<Invite>> getAllInvitations() {

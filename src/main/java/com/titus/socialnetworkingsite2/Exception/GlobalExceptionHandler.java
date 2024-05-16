@@ -39,7 +39,6 @@ return ResponseEntity.status(UNAUTHORIZED)
                         .businessErrorDescription(ACCOUNT_DISABLED.getDescription())
                         .error(disabledException.getMessage() )
                         .build());
-
     }
 
 
@@ -76,7 +75,6 @@ return ResponseEntity.status(UNAUTHORIZED)
         });
         return ResponseEntity.status(BAD_REQUEST)
                 .body(ExceptionResponse.builder()
-
                         .validationError(errors)
                         .build());
 

@@ -15,8 +15,7 @@ public interface BlackListRepository extends JpaRepository<BlackList, Integer> {
 
     BlackList findByBlacklisted(String blacklisted);
 
-   // @Query("SELECT b.blacklisted FROM BlackList b WHERE b.blacklistedBy = :username")
-    List<BlackListDTO> findAllByBlacklistedBy(String username);
+    List<BlackList> findAllByBlacklistedBy(String username);
 
     Optional<BlackList> findByBlacklistedAndBlacklistedBy(String blacklisted, String blacklistedBy);
 

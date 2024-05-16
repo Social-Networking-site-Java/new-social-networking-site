@@ -1,5 +1,6 @@
 package com.titus.socialnetworkingsite2.Dto;
 
+import com.titus.socialnetworkingsite2.Password.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,6 +21,7 @@ public class AuthenticationDTO {
 
     @NotEmpty(message = "field required")
     @NotBlank(message = "field required")
+    @ValidPassword
     @Size(min = 8, message = "Invalid Password")
     private String password;
 }

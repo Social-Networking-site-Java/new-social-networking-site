@@ -53,7 +53,7 @@ application:
   security:
     jwt:
       secret-key: 357638792F423F4428472B4B6250655368566D597133743677397A2443264629
-      expiration: 8640000 # one day
+      expiration: 86400000 # one day
   mailing:
     frontend:
       activation-url: http://localhost:5000/api/v1/auth/activate-account?token=

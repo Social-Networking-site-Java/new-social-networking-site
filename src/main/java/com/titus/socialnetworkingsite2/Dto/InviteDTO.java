@@ -10,7 +10,7 @@ import lombok.*;
 public class InviteDTO {
    // private Integer id;
     private String sender;
-    private String recipientEmail;
+    private String recipient;
     private String inviteCode;
     private boolean accepted;
 }

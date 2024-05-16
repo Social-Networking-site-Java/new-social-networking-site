@@ -37,15 +37,25 @@ public class BlackListServicesImpl implements BlackListService {
 
 
         // check if user exist
-        var existingUser = userRepository.findByUsername(blackListDTO.getBlacklisted());
-        if (existingUser.isEmpty()) {
+        var blacklistedUser = userRepository.findByUsernameIgnoreCase(blackListDTO.getBlacklisted().trim());
+        if (blacklistedUser.isEmpty()) {
             return GenResponse.builder()
                     .status(HttpStatus.NOT_FOUND.value())
                     .message(blackListDTO.getBlacklisted() + USER_NOT_FOUND)
                     .build();
         }
+
+        System.out.println(user.getUsername());
+        System.out.println(blacklistedUser);
+
+
+
+      //  UserDetails user2 = (UserDetails) userRepository.findByUsernameIgnoreCase(blackListDTO.getBlacklisted().trim()).get();
+
+
         // Check if the recipient is blacklisted
-        Optional<BlackList> existingBlacklistedUser = blackListRepository.findByBlacklistedAndBlacklistedBy(blackListDTO.getBlacklisted(), user.getUsername());
+        Optional<BlackList> existingBlacklistedUser = blackListRepository
+                .findByBlacklistedAndBlacklistedBy(blacklistedUser.get().getUsername(), user.getUsername());
 
         if (existingBlacklistedUser.isPresent()) {
             return GenResponse.builder()
@@ -57,11 +67,12 @@ public class BlackListServicesImpl implements BlackListService {
 
         // Create and save the BlackList object
         BlackList blackList = BlackList.builder()
-                .blacklisted(blackListDTO.getBlacklisted())
+                .blacklisted(blacklistedUser.get().getUsername())
                 .isBlacklisted(true)
 //                .blacklistedBy(blackListDTO.getBlacklistedBy())
                 .blacklistedBy(user.getUsername())
                 .build();
+
         blackListRepository.save(blackList);
 
         return GenResponse.builder()
@@ -89,11 +100,11 @@ public class BlackListServicesImpl implements BlackListService {
 
         return GenResponse.builder()
                 .status(HttpStatus.OK.value())
-                .message(SUCCESSFULLY_REMOVE_FROM_BLACKLIST).build();
+                .message(blacklisted +  SUCCESSFULLY_REMOVE_FROM_BLACKLIST).build();
     }
 
     @Override
-    public List<BlackListDTO> getBlacklistsByUsername(String blacklistedBy) {
+    public List<BlackList> getBlacklistsByUsername(String blacklistedBy) {
         return blackListRepository.findAllByBlacklistedBy(blacklistedBy);
     }
 }

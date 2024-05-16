@@ -1,6 +1,6 @@
 package com.titus.socialnetworkingsite2.config;
 
-import com.titus.socialnetworkingsite2.services.UserDetailImpl;
+import com.titus.socialnetworkingsite2.services.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,8 +22,8 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
 
-    //private final UserDetailImpl userDetail;
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
+   // private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
     //private final UserDetailImpl userDetailImpl;
 
@@ -45,6 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
+           // UserDetails userDetails = userDetail.loadUserByUsername(userEmail);
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
             System.out.println();
@@ -59,7 +60,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             System.out.println();
 
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                        new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
                         userDetails.getAuthorities()
@@ -67,7 +69,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                SecurityContextHolder.getContext()
+                        .setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
         filterChain.doFilter(request, response);

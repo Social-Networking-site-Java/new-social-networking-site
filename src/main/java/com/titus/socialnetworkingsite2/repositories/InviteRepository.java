@@ -14,20 +14,10 @@ public interface InviteRepository extends JpaRepository<Invite, Integer> {
 
     Optional<Invite> findByInviteCode(String user);
 
-  //  @Query("SELECT b.recipientEmail FROM Invite b WHERE b.sender = :currentUser")
-  //  List<Invite> findByAllRecipientEmails(String currentUser);
-
-   // List<InviteDTO> findByRecipientEmailAndSender(String recipientEmail, String sender);
-
-//    @Query("SELECT InviteDTO(b.recipientEmail) FROM Invite b WHERE b.sender = :currentUser")
-//    List<InviteDTO> findAllRecipientEmails(@Param("currentUser") String currentUser);
-
     List<Invite> findAllBySender(String sender);
-
-
 
     List<Invite> findByAcceptedTrueAndSender(String sender);
 
-    Optional<Invite> findByRecipientEmailAndSender(String recipientEmail, String sender);
+    Optional<Invite> findByRecipientAndSenderIgnoreCase(String recipientEmail, String sender);
 
 }

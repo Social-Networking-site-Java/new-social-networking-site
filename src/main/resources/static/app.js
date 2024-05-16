@@ -1,67 +1,41 @@
+const chatMessages = document.getElementById('chatMessages');
+const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
 
+// WebSocket connection
+const socket = new WebSocket('ws://localhost:5000/chat');
 
-
-// const stompClient = new StompJs.Client({
-//     brokerURL: 'ws://localhost:5000/gs-guide-websocket'
-// });
-
-const url = 'ws://localhost:5000/gs-guide-websocket';
-
-const client = Stomp.client(url);
-
-client.onConnect = (frame) => {
-    setConnected(true);
-    console.log('Connected: ' + frame);
-    client.subscribe('/topic/greetings', (greeting) => {
-        showGreeting(JSON.parse(greeting.body).content);
-    });
+socket.onopen = () => {
+    console.log('WebSocket connection established');
 };
 
-client.onWebSocketError = (error) => {
-    console.error('Error with websocket', error);
+socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    const messageElement = document.createElement('div');
+    messageElement.textContent = `${message.sender}: ${message.message}`;
+    chatMessages.appendChild(messageElement);
 };
 
-client.onStompError = (frame) => {
-    console.error('Broker reported error: ' + frame.headers['message']);
-    console.error('Additional details: ' + frame.body);
+socket.onclose = () => {
+    console.log('WebSocket connection closed');
 };
 
-function setConnected(connected) {
-    $("#connect").prop("disabled", connected);
-    $("#disconnect").prop("disabled", !connected);
-    if (connected) {
-        $("#conversation").show();
+sendButton.addEventListener('click', sendMessage);
+messageInput.addEventListener('keyup', function (event) {
+    if (event.key === 'Enter') {
+        sendMessage();
     }
-    else {
-        $("#conversation").hide();
-    }
-    $("#greetings").html("");
-}
-
-function connect() {
-    client.activate();
-}
-
-function disconnect() {
-    client.deactivate().then(() => {});
-    setConnected(false);
-    console.log("Disconnected");
-}
-
-function sendName() {
-    client.publish({
-        destination: "/app/hello",
-        body: JSON.stringify({'name': $("#name").val()})
-    });
-}
-
-function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
-}
-
-$(function () {
-    $("form").on('submit', (e) => e.preventDefault());
-    $( "#connect" ).click(() => connect());
-    $( "#disconnect" ).click(() => disconnect());
-    $( "#send" ).click(() => sendName());
 });
+
+function sendMessage() {
+    const message = messageInput.value.trim();
+    if (message !== '') {
+        const payload = {
+            sender: 'Your Username', // Replace with the actual username
+            recipient: 'Recipient Username', // Replace with the recipient's username
+            message: message
+        };
+        socket.send(JSON.stringify(payload));
+        messageInput.value = '';
+    }
+}
